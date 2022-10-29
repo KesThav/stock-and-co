@@ -17,7 +17,7 @@ app.use("/user", proxy("http://localhost:8082"));
 app.use("/order", proxy("http://localhost:8083"));
 app.use("/product", proxy("http://localhost:8084"));
 
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8085;
 
 app.listen(port, () =>
   console.log(`Gateway listening at http://localhost:${port}`)

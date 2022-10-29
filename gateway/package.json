@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"node index.js\"  \"node ../order-microservice/index.js\" \"node ../product-microservice/index.js\" \"node ../user-microservice/index.js\""
+    "dev": "concurrently \"node index.js\"  \"node ../order-microservice/index.js\" \"node ../product-microservice/index.js\" \"node ../user-microservice/index.js\"",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

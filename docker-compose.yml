@@ -1,0 +1,69 @@
+version: "3"
+services:
+  mysql-camunda:
+    image: mysql
+    volumes:
+      - camunda-data:/var/lib/mysql
+    ports:
+      - 3310:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: changeme
+      MYSQL_DATABASE: process_engine
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: changeme
+  camunda:
+    image: camunda/camunda-bpm-platform
+    ports:
+      - 8080:8080
+    environment:
+      DB_DRIVER: com.mysql.jdbc.Driver
+      DB_USERNAME: dev
+      DB_PASSWORD: changeme
+      DB_URL: jdbc:mysql://mysql-camunda:3306/process_engine
+      WAIT_FOR: mysql-camunda:3306
+      WAIT_FOR_TIMEOUT: 120
+    depends_on:
+      - mysql-camunda
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  user-microservice:
+    build: user-microservice
+    ports:
+      - "8082:8082"
+    environment:
+      WAIT_HOSTS: camunda:8080
+
+  order-microservice:
+    build: order-microservice
+    ports:
+      - "8083:8083"
+    environment:
+      WAIT_HOSTS: camunda:8080
+
+  product-microservice:
+    build: product-microservice
+    ports:
+      - "8084:8084"
+    environment:
+      WAIT_HOSTS: camunda:8080
+
+  gateway:
+    build: gateway
+    ports:
+      - "8085:8085"
+    environment:
+      WAIT_HOSTS: camunda:8080
+
+  client:
+    build: client
+    ports:
+      - "8081:3000"
+    environment:
+      WAIT_HOSTS: camunda:8080
+
+volumes:
+  camunda-data:
