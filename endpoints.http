@@ -1,0 +1,5 @@
+GET http://localhost:8085/user
+
+GET http://localhost:8085/order
+
+GET http://localhost:8085/product

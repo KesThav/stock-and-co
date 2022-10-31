@@ -14,7 +14,7 @@ $ cd stock-and-co
 $ docker compose up
 ```
 
-Client => `https://localhost:8081`
-server => `https://localhost:8085`
+Client => `https://localhost:8081`  
+server => `https://localhost:8085`  
 Camunda Workflow engine => `https://localhost:8080/camunda`
 
