@@ -13,9 +13,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/user", proxy("http://localhost:8082"));
-app.use("/order", proxy("http://localhost:8083"));
-app.use("/product", proxy("http://localhost:8084"));
+app.use("/user", proxy("http://user-microservice:8082"));
+app.use("/order", proxy("http://order-microservice:8083"));
+app.use("/product", proxy("http://product-microservice:8084"));
 
 const port = process.env.PORT || 8085;
 
