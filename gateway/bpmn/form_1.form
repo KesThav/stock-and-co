@@ -1,0 +1,25 @@
+{
+  "components": [
+    {
+      "label": "isHoliday",
+      "type": "textfield",
+      "id": "Field_04ez1df",
+      "key": "isHoliday"
+    },
+    {
+      "label": "approved?",
+      "type": "checkbox",
+      "id": "Field_101ne7a",
+      "key": "approved"
+    }
+  ],
+  "type": "default",
+  "id": "payment-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.4.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.18.0",
+  "schemaVersion": 5
+}

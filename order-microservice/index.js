@@ -10,7 +10,7 @@ const corsOptions = {
 };
 
 const db_url =
-  "mongodb://root:password@mongo-order-microservice:9002/?authSource=admin";
+  "mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
 
 Mongoose.connect(
   db_url,

@@ -42,7 +42,7 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-user-microservice:9000/?authSource=admin
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-user-microservice:9000/users?authSource=admin
     links:
       - mongo-user-microservice
     restart: unless-stopped
@@ -70,7 +70,7 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-order-microservice:9002/?authSource=admin
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin
     links:
       - mongo-user-microservice
     restart: unless-stopped
@@ -100,7 +100,7 @@ services:
     environment:
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-product-microservice:9004/?authSource=admin
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin
     links:
       - mongo-user-microservice
     restart: unless-stopped
