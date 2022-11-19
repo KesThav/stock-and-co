@@ -25,15 +25,6 @@ const productSchema = new Mongoose.Schema(
         url: {
           type: String,
         },
-        height: {
-          type: Number,
-        },
-        width: {
-          type: Number,
-        },
-        __typename: {
-          type: String,
-        },
       },
     ],
   },

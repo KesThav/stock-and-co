@@ -4,6 +4,8 @@ import cors from "cors";
 import Mongoose from "mongoose";
 import data from "./data/fake_data.js";
 import Product from "./model/product.model.js";
+import schema from "./schema/schema.js";
+import { graphqlHTTP } from "express-graphql";
 
 export const app = express();
 
@@ -12,7 +14,8 @@ const corsOptions = {
 };
 
 const db_url =
-  "mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
+  //"mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
+  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/?retryWrites=true&w=majority";
 
 Mongoose.connect(
   db_url,
@@ -43,10 +46,17 @@ const load_database = async () => {
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+  })
+);
 
 const port = process.env.PORT || 8084;
 
 app.listen(port, async () => {
   console.log(`Product-microservice listening at http://localhost:${port}`);
-  await load_database();
+  //await load_database();
 });
