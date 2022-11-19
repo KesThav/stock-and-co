@@ -1,0 +1,49 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"""All queries"""
+type Query {
+  """A single user"""
+  user(_id: String): User
+  """List all users"""
+  users: [User]
+  """A single product"""
+  product(id: String): Product
+  """List all products"""
+  products: [Product]
+}
+
+"""This represents a user"""
+type User {
+  name: String
+  password: String
+}
+
+"""All mutations"""
+type Mutation {
+  """add product"""
+  addProduct(name: String!, description: String!, type: String!, averageRating: Int, quantity: Int!, price: Float!, images: [String]): Product
+  """update product"""
+  updateProduct(_id: String!, name: String, description: String, type: String, averageRating: Int, quantity: Int, price: Float, images: [String]): Product
+  """delete product"""
+  deleteProduct(_id: String!): Product
+}
+
+"""This represents a product"""
+type Product {
+  _id: String
+  name: String!
+  description: String!
+  type: String!
+  averageRating: Float
+  quantity: Int!
+  price: Float!
+  images: [images]
+}
+
+"""This represents a product image"""
+type images {
+  url: String
+}

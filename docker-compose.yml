@@ -111,10 +111,16 @@ services:
     ports:
       - "8084:8084"
 
-  gateway:
+  #gateway:
+  #  build: gateway
+  #  ports:
+  #    - "8085:8085"
+  mesh:
     build: gateway
     ports:
-      - "8085:8085"
+      - "4000:4000"
+    stdin_open: true
+    tty: true
 
   client:
     build: client

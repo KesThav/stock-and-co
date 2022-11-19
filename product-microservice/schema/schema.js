@@ -1,11 +1,9 @@
 import {
-  buildSchema,
   GraphQLFloat,
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
-  GraphQLScalarType,
   GraphQLSchema,
   GraphQLString,
 } from "graphql";

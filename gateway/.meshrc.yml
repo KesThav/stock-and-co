@@ -1,0 +1,12 @@
+sources:
+  - name: Users
+    handler:
+      graphql:
+        endpoint: http://user-microservice:8082/graphql
+  - name: Products
+    handler:
+      graphql:
+        endpoint: http://product-microservice:8084/graphql
+
+serve:
+  hostname: 0.0.0.0

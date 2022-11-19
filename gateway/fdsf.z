@@ -5,6 +5,7 @@ RUN apk add curl
 RUN apk add --no-cache bash
 RUN npm install .
 
-RUN npm install .
+EXPOSE 8085
+
 CMD ["npm","run","mesh:dev"]
 ENTRYPOINT ["./start.sh"]
