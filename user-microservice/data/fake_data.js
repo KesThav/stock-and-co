@@ -1,0 +1,130 @@
+const data = [
+  {
+    name: "admin",
+    email: "admin@admin.com",
+    password: "admin",
+    role: "admin",
+  },
+  {
+    name: "Nyasia McLaughlin",
+    email: "nyasia@mclaughlin.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Teagan Torphy MD",
+    email: "teagan@torphy.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Alan Feeney",
+    email: "alan@feeney.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Juwan Stark",
+    email: "juwan@stark.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Rachelle Adams",
+    email: "rachelle@adams.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Grover Dickens",
+    email: "grover@dickens.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Gabe Cremin IV",
+    email: "gabe@cremin.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Brenda Dooley",
+    email: "brenda@dooley.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Ulices Heaney",
+    email: "ulices@heaney.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "German Sauer",
+    email: "german@sauer.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Sallie Morar",
+    email: "sallie@morar.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Lupe Murphy",
+    email: "lupe@murphy.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Mona Dooley",
+    email: "mona@dooley.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "ashad Zboncak",
+    email: "ashad@zboncak.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Michael Aufderhar",
+    email: "micheal@aufderhar.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Jackeline Barton",
+    email: "jackeline@barton.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Royce Kunze",
+    email: "royce@kunze.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Ashleigh Will",
+    email: "ashleigh@will.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Abdiel Williamson",
+    email: "abdiel@williamson.com",
+    password: "123456789",
+    role: "user",
+  },
+  {
+    name: "Jefferey Lynch",
+    email: "jefferey@lynch.com",
+    password: "123456789",
+    role: "user",
+  },
+];
+
+export default data;

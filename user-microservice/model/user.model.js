@@ -1,12 +1,20 @@
 import Mongoose from "mongoose";
 
-const productSchema = new Mongoose.Schema(
+const userSchema = new Mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
     },
     password: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    role: {
       type: String,
       required: true,
     },
@@ -24,4 +32,4 @@ const productSchema = new Mongoose.Schema(
   { timestamps: true }
 );
 
-export default Mongoose.model("Product", productSchema);
+export default Mongoose.model("User", userSchema);
