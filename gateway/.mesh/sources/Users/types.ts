@@ -34,8 +34,37 @@ export type QueryuserArgs = {
 
 /** This represents a user */
 export type User = {
+  _id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+};
+
+/** All mutations */
+export type Mutation = {
+  /** register user */
+  register?: Maybe<jwttoken>;
+  /** login user */
+  login?: Maybe<jwttoken>;
+};
+
+
+/** All mutations */
+export type MutationregisterArgs = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
+/** All mutations */
+export type MutationloginArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+/** This represents a jwt token */
+export type jwttoken = {
+  token: Scalars['String'];
 };
 
   export type QuerySdk = {
@@ -46,7 +75,10 @@ export type User = {
   };
 
   export type MutationSdk = {
-    
+      /** register user **/
+  register: InContextSdkMethod<Mutation['register'], MutationregisterArgs, MeshContext>,
+  /** login user **/
+  login: InContextSdkMethod<Mutation['login'], MutationloginArgs, MeshContext>
   };
 
   export type SubscriptionSdk = {

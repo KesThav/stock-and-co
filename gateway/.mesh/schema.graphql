@@ -13,22 +13,43 @@ type Query {
   product(id: String): Product
   """List all products"""
   products: [Product]
-}
-
-"""This represents a user"""
-type User {
-  name: String
-  password: String
+  """List all orders"""
+  orders: [Order]
+  """A single order"""
+  order(_id: String): Order
+  """Get orders by user"""
+  orderByUser(userid: String): [Order]
 }
 
 """All mutations"""
 type Mutation {
+  """register user"""
+  register(name: String!, email: String!, password: String!): jwttoken
+  """login user"""
+  login(email: String!, password: String!): jwttoken
   """add product"""
   addProduct(name: String!, description: String!, type: String!, averageRating: Int, quantity: Int!, price: Float!, images: [String]): Product
   """update product"""
   updateProduct(_id: String!, name: String, description: String, type: String, averageRating: Int, quantity: Int, price: Float, images: [String]): Product
   """delete product"""
   deleteProduct(_id: String!): Product
+  """create order"""
+  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!): Order
+  """update order status"""
+  updateOrderStatus(_id: String!, status: String!): Order
+}
+
+"""This represents a user"""
+type User {
+  _id: String
+  name: String
+  email: String
+  orders: [Order!]!
+}
+
+"""This represents a jwt token"""
+type jwttoken {
+  token: String!
 }
 
 """This represents a product"""
@@ -46,4 +67,27 @@ type Product {
 """This represents a product image"""
 type images {
   url: String
+}
+
+"""This represents an order"""
+type Order {
+  userid: String
+  products: [productOrder]
+  total: Float
+  status: String
+  _id: String
+}
+
+"""This represents a product saved in order"""
+type productOrder {
+  productid: String
+  price: Float
+  quantity: Int
+}
+
+"""This represents a product input"""
+input productOrderInput {
+  productid: String
+  price: Float
+  quantity: Int
 }

@@ -2,11 +2,30 @@ sources:
   - name: Users
     handler:
       graphql:
-        endpoint: http://user-microservice:8082/graphql
+        endpoint: http://localhost:8082/graphql
   - name: Products
     handler:
       graphql:
-        endpoint: http://product-microservice:8084/graphql
+        endpoint: http://localhost:8084/graphql
+  - name: Orders
+    handler:
+      graphql:
+        endpoint: http://localhost:8083/graphql
 
 serve:
   hostname: 0.0.0.0
+
+additionalTypeDefs: |
+  extend type User {
+    orders: [Order!]!
+  }
+
+additionalResolvers:
+  - targetTypeName: User
+    targetFieldName: orders
+    sourceName: "Orders"
+    sourceTypeName: "Query"
+    sourceFieldName: "orderByUser"
+    requiredSelectionSet: "{_id}"
+    sourceArgs:
+      userid: "{root._id}"

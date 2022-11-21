@@ -1,5 +1,6 @@
 schema {
   query: Query
+  mutation: Mutation
 }
 
 """All queries"""
@@ -12,6 +13,20 @@ type Query {
 
 """This represents a user"""
 type User {
+  _id: String
   name: String
-  password: String
+  email: String
+}
+
+"""All mutations"""
+type Mutation {
+  """register user"""
+  register(name: String!, email: String!, password: String!): jwttoken
+  """login user"""
+  login(email: String!, password: String!): jwttoken
+}
+
+"""This represents a jwt token"""
+type jwttoken {
+  token: String!
 }

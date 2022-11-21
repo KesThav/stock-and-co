@@ -1,0 +1,45 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"""All queries"""
+type Query {
+  """List all orders"""
+  orders: [Order]
+  """A single order"""
+  order(_id: String): Order
+  """Get orders by user"""
+  orderByUser(userid: String): [Order]
+}
+
+"""This represents an order"""
+type Order {
+  userid: String
+  products: [productOrder]
+  total: Float
+  status: String
+  _id: String
+}
+
+"""This represents a product saved in order"""
+type productOrder {
+  productid: String
+  price: Float
+  quantity: Int
+}
+
+"""All mutations"""
+type Mutation {
+  """create order"""
+  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!): Order
+  """update order status"""
+  updateOrderStatus(_id: String!, status: String!): Order
+}
+
+"""This represents a product input"""
+input productOrderInput {
+  productid: String
+  price: Float
+  quantity: Int
+}

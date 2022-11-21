@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import Mongoose from "mongoose";
 import load_orders from "./load_orders.js";
+import { graphqlHTTP } from "express-graphql";
+import schema from "./schema/schema.js";
 
 export const app = express();
 
@@ -30,6 +32,13 @@ app.get("/", (req, res) => {
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema,
+    graphiql: true,
+  })
+);
 
 const port = process.env.PORT || 8083;
 

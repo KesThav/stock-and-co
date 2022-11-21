@@ -36,7 +36,7 @@ const Query = new GraphQLObjectType({
   name: "Query",
   description: "All queries",
   fields: () => ({
-    getOneUser: {
+    user: {
       type: userType,
       description: "A single user",
       args: {
@@ -44,7 +44,7 @@ const Query = new GraphQLObjectType({
       },
       resolve: (parent, args) => getUser(args._id),
     },
-    getAllUsers: {
+    users: {
       type: new GraphQLList(userType),
       description: "List all users",
       resolve: () => getAllUsers(),

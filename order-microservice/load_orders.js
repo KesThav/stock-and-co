@@ -40,7 +40,7 @@ const getUsers = async () => {
   let users = [];
   var userQuery = JSON.stringify({
     query: `query {
-      getAllUsers {
+      users {
           _id
       }
   }`,
@@ -59,7 +59,7 @@ const getUsers = async () => {
   try {
     const res = await axios(userConfig);
     if (res) {
-      res.data.data.getAllUsers.forEach((element) => {
+      res.data.data.users.forEach((element) => {
         users.push(element);
       });
     }
