@@ -15,7 +15,7 @@ const corsOptions = {
 
 const db_url =
   //"mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
-  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-products";
 
 Mongoose.connect(
   db_url,

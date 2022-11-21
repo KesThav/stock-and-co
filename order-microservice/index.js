@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import Mongoose from "mongoose";
+import load_orders from "./load_orders.js";
 
 export const app = express();
 
@@ -10,7 +11,8 @@ const corsOptions = {
 };
 
 const db_url =
-  "mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
+  //"mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
+  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-orders";
 
 Mongoose.connect(
   db_url,
@@ -31,6 +33,7 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT || 8083;
 
-app.listen(port, () =>
-  console.log(`Order-microservice listening at http://localhost:${port}`)
-);
+app.listen(port, async () => {
+  console.log(`Order-microservice listening at http://localhost:${port}`);
+  //load_orders();
+});
