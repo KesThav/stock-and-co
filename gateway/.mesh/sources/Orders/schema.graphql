@@ -11,6 +11,8 @@ type Query {
   order(_id: String): Order
   """Get orders by user"""
   orderByUser(userid: String): [Order]
+  """Get orders by product"""
+  orderByProduct(productid: String): [Order]
 }
 
 """This represents an order"""

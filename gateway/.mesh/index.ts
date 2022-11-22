@@ -6,9 +6,9 @@ import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
-import type { UsersTypes } from './sources/Users/types';
 import type { ProductsTypes } from './sources/Products/types';
 import type { OrdersTypes } from './sources/Orders/types';
+import type { UsersTypes } from './sources/Users/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -43,6 +43,8 @@ export type Query = {
   order?: Maybe<Order>;
   /** Get orders by user */
   orderByUser?: Maybe<Array<Maybe<Order>>>;
+  /** Get orders by product */
+  orderByProduct?: Maybe<Array<Maybe<Order>>>;
 };
 
 
@@ -67,6 +69,12 @@ export type QueryorderArgs = {
 /** All queries */
 export type QueryorderByUserArgs = {
   userid?: InputMaybe<Scalars['String']>;
+};
+
+
+/** All queries */
+export type QueryorderByProductArgs = {
+  productid?: InputMaybe<Scalars['String']>;
 };
 
 /** All mutations */
@@ -172,6 +180,7 @@ export type Product = {
   quantity: Scalars['Int'];
   price: Scalars['Float'];
   images?: Maybe<Array<Maybe<images>>>;
+  orderList: Array<Order>;
 };
 
 /** This represents a product image */
@@ -186,6 +195,7 @@ export type Order = {
   total?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
+  userDetails: User;
 };
 
 /** This represents a product saved in order */
@@ -193,6 +203,7 @@ export type productOrder = {
   productid?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   quantity?: Maybe<Scalars['Int']>;
+  productDetails: Product;
 };
 
 /** This represents a product input */
@@ -326,6 +337,7 @@ export type QueryResolvers<ContextType = MeshContext, ParentType extends Resolve
   orders?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType>;
   order?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType, Partial<QueryorderArgs>>;
   orderByUser?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType, Partial<QueryorderByUserArgs>>;
+  orderByProduct?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType, Partial<QueryorderByProductArgs>>;
 }>;
 
 export type MutationResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -360,6 +372,7 @@ export type ProductResolvers<ContextType = MeshContext, ParentType extends Resol
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   images?: Resolver<Maybe<Array<Maybe<ResolversTypes['images']>>>, ParentType, ContextType>;
+  orderList?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -374,6 +387,7 @@ export type OrderResolvers<ContextType = MeshContext, ParentType extends Resolve
   total?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  userDetails?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -381,6 +395,7 @@ export type productOrderResolvers<ContextType = MeshContext, ParentType extends 
   productid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  productDetails?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

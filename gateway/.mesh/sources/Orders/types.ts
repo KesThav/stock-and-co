@@ -26,6 +26,8 @@ export type Query = {
   order?: Maybe<Order>;
   /** Get orders by user */
   orderByUser?: Maybe<Array<Maybe<Order>>>;
+  /** Get orders by product */
+  orderByProduct?: Maybe<Array<Maybe<Order>>>;
 };
 
 
@@ -38,6 +40,12 @@ export type QueryorderArgs = {
 /** All queries */
 export type QueryorderByUserArgs = {
   userid?: InputMaybe<Scalars['String']>;
+};
+
+
+/** All queries */
+export type QueryorderByProductArgs = {
+  productid?: InputMaybe<Scalars['String']>;
 };
 
 /** This represents an order */
@@ -93,7 +101,9 @@ export type productOrderInput = {
   /** A single order **/
   order: InContextSdkMethod<Query['order'], QueryorderArgs, MeshContext>,
   /** Get orders by user **/
-  orderByUser: InContextSdkMethod<Query['orderByUser'], QueryorderByUserArgs, MeshContext>
+  orderByUser: InContextSdkMethod<Query['orderByUser'], QueryorderByUserArgs, MeshContext>,
+  /** Get orders by product **/
+  orderByProduct: InContextSdkMethod<Query['orderByProduct'], QueryorderByProductArgs, MeshContext>
   };
 
   export type MutationSdk = {

@@ -47,8 +47,15 @@ export const updateOrderStatus = async (_id, status) => {
 };
 
 export const getUserOrders = async (userid) => {
-  console.log(userid);
   const userOrders = await Order.find({ userid: userid });
 
   return userOrders;
+};
+
+export const getProductOrders = async (productid) => {
+  const productOrders = await Order.find({
+    products: { $elemMatch: { productid: productid } },
+  });
+
+  return productOrders;
 };

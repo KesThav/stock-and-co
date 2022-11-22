@@ -14,6 +14,7 @@ import {
   createOrder,
   updateOrderStatus,
   getUserOrders,
+  getProductOrders,
 } from "../functions/functions.js";
 
 const productOrderType = new GraphQLObjectType({
@@ -72,6 +73,14 @@ const Query = new GraphQLObjectType({
         userid: { type: GraphQLString },
       },
       resolve: (parent, args) => getUserOrders(args.userid),
+    },
+    orderByProduct: {
+      type: new GraphQLList(orderType),
+      description: "Get orders by product",
+      args: {
+        productid: { type: GraphQLString },
+      },
+      resolve: (parent, args) => getProductOrders(args.productid),
     },
   }),
 });

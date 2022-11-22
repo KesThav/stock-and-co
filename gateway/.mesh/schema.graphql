@@ -19,6 +19,8 @@ type Query {
   order(_id: String): Order
   """Get orders by user"""
   orderByUser(userid: String): [Order]
+  """Get orders by product"""
+  orderByProduct(productid: String): [Order]
 }
 
 """All mutations"""
@@ -62,6 +64,7 @@ type Product {
   quantity: Int!
   price: Float!
   images: [images]
+  orderList: [Order!]!
 }
 
 """This represents a product image"""
@@ -76,6 +79,7 @@ type Order {
   total: Float
   status: String
   _id: String
+  userDetails: User!
 }
 
 """This represents a product saved in order"""
@@ -83,6 +87,7 @@ type productOrder {
   productid: String
   price: Float
   quantity: Int
+  productDetails: Product!
 }
 
 """This represents a product input"""
