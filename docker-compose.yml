@@ -25,107 +25,107 @@ services:
     depends_on:
       - mysql-camunda
 
-  ####################################################
-  mongo-user-microservice:
-    image: mongo:latest
-    command: mongod --port 9000
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-    volumes:
-      - user-microservice-data:/data/db
-  mongo-express-user-microservice:
-    image: mongo-express
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-user-microservice:9000/users?authSource=admin
-    links:
-      - mongo-user-microservice
-    restart: unless-stopped
-    ports:
-      - "9001:8081"
+  # ####################################################
+  # mongo-user-microservice:
+  #   image: mongo:latest
+  #   command: mongod --port 9000
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=password
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9000:9000"
+  #   volumes:
+  #     - user-microservice-data:/data/db
+  # mongo-express-user-microservice:
+  #   image: mongo-express
+  #   environment:
+  #     - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+  #     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+  #     - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-user-microservice:9000/users?authSource=admin
+  #   links:
+  #     - mongo-user-microservice
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9001:8081"
 
-  user-microservice:
-    build: user-microservice
-    ports:
-      - "8082:8082"
-  ############################################################
-  mongo-order-microservice:
-    image: mongo:latest
-    command: mongod --port 9002
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    restart: unless-stopped
-    ports:
-      - "9002:9002"
-    volumes:
-      - order-microservice-data:/data/db
-  mongo-express-order-microservice:
-    image: mongo-express
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin
-    links:
-      - mongo-order-microservice
-    restart: unless-stopped
-    ports:
-      - "9003:8081"
+  # user-microservice:
+  #   build: user-microservice
+  #   ports:
+  #     - "8082:8082"
+  # ############################################################
+  # mongo-order-microservice:
+  #   image: mongo:latest
+  #   command: mongod --port 9002
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=password
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9002:9002"
+  #   volumes:
+  #     - order-microservice-data:/data/db
+  # mongo-express-order-microservice:
+  #   image: mongo-express
+  #   environment:
+  #     - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+  #     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+  #     - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin
+  #   links:
+  #     - mongo-order-microservice
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9003:8081"
 
-  order-microservice:
-    build: order-microservice
-    ports:
-      - "8083:8083"
+  # order-microservice:
+  #   build: order-microservice
+  #   ports:
+  #     - "8083:8083"
 
-  ##################################################################
+  # ##################################################################
 
-  mongo-product-microservice:
-    image: mongo:latest
-    command: mongod --port 9004
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=password
-    restart: unless-stopped
-    ports:
-      - "9004:9004"
-    volumes:
-      - product-microservice-data:/data/db
-  mongo-express-product-microservice:
-    image: mongo-express
-    environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
-      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin
-    links:
-      - mongo-product-microservice
-    restart: unless-stopped
-    ports:
-      - "9005:8081"
-  product-microservice:
-    build: product-microservice
-    ports:
-      - "8084:8084"
+  # mongo-product-microservice:
+  #   image: mongo:latest
+  #   command: mongod --port 9004
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=password
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9004:9004"
+  #   volumes:
+  #     - product-microservice-data:/data/db
+  # mongo-express-product-microservice:
+  #   image: mongo-express
+  #   environment:
+  #     - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+  #     - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+  #     - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin
+  #   links:
+  #     - mongo-product-microservice
+  #   restart: unless-stopped
+  #   ports:
+  #     - "9005:8081"
+  # product-microservice:
+  #   build: product-microservice
+  #   ports:
+  #     - "8084:8084"
 
-  #gateway:
-  #  build: gateway
-  #  ports:
-  #    - "8085:8085"
-  mesh:
-    build: gateway
-    ports:
-      - "4000:4000"
-    stdin_open: true
-    tty: true
+  # #gateway:
+  # #  build: gateway
+  # #  ports:
+  # #    - "8085:8085"
+  # mesh:
+  #   build: gateway
+  #   ports:
+  #     - "4000:4000"
+  #   stdin_open: true
+  #   tty: true
 
-  client:
-    build: client
-    ports:
-      - "8081:3000"
+  # client:
+  #   build: client
+  #   ports:
+  #     - "8081:3000"
 
 volumes:
   camunda-data:

@@ -6,6 +6,8 @@ import data from "./data/fake_data.js";
 import Product from "./model/product.model.js";
 import schema from "./schema/schema.js";
 import { graphqlHTTP } from "express-graphql";
+import camundaPkg from "camunda-external-task-client-js";
+const { Client, logger, Variables } = camundaPkg;
 
 export const app = express();
 

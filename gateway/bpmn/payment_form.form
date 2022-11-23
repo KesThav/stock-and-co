@@ -1,0 +1,45 @@
+{
+  "components": [
+    {
+      "text": "Payment form",
+      "type": "text",
+      "id": "Field_05nt1i8",
+      "properties": {}
+    },
+    {
+      "label": "Product",
+      "type": "textfield",
+      "id": "Field_06i270i",
+      "key": "product",
+      "disabled": true
+    },
+    {
+      "label": "Quantity",
+      "type": "textfield",
+      "id": "Field_18fqb8s",
+      "key": "quantity",
+      "disabled": true
+    },
+    {
+      "label": "Price",
+      "type": "textfield",
+      "id": "Field_0z2exf0",
+      "key": "price"
+    },
+    {
+      "label": "Approved ?",
+      "type": "checkbox",
+      "id": "Field_0jutksy",
+      "key": "approved"
+    }
+  ],
+  "type": "default",
+  "id": "payment_form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.4.1"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.18.0",
+  "schemaVersion": 5
+}

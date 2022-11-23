@@ -18,16 +18,10 @@ const userSchema = new Mongoose.Schema(
       type: String,
       required: true,
     },
-    productsBought: [
-      {
-        _id: {
-          type: String,
-        },
-        price: {
-          type: Number,
-        },
-      },
-    ],
+    balance: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );

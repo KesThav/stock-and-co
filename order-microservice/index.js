@@ -5,6 +5,9 @@ import Mongoose from "mongoose";
 import load_orders from "./load_orders.js";
 import { graphqlHTTP } from "express-graphql";
 import schema from "./schema/schema.js";
+import { subscriptions } from "./functions/subcriptions.js";
+import camundaPkg from "camunda-external-task-client-js";
+const { Client, logger, Variables } = camundaPkg;
 
 export const app = express();
 
@@ -28,6 +31,18 @@ Mongoose.connect(
 app.get("/", (req, res) => {
   res.send("Welcome from order !");
 });
+
+//camund config
+const config = {
+  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  use: logger,
+  asyncResponseTimeout: 10000,
+};
+
+const client = new Client(config);
+
+//all listeners are in this function
+subscriptions(client);
 
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));

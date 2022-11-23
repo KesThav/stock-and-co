@@ -7,6 +7,9 @@ import { graphqlHTTP } from "express-graphql";
 import data from "./data/fake_data.js";
 import { register } from "./functions/functions.js";
 import dotenv from "dotenv";
+import { subscriptions } from "./functions/subcriptions.js";
+import camundaPkg from "camunda-external-task-client-js";
+const { Client, logger, Variables } = camundaPkg;
 
 dotenv.config();
 
@@ -42,6 +45,16 @@ app.use(
     graphiql: true,
   })
 );
+
+const config = {
+  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  use: logger,
+  asyncResponseTimeout: 10000,
+};
+
+const client = new Client(config);
+
+subscriptions(client);
 
 const load_users = async () => {
   console.log("Loading users...");

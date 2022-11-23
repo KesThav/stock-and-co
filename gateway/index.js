@@ -7,6 +7,8 @@ import axios from "axios";
 import FormData from "form-data";
 import { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import camundaPkg from "camunda-external-task-client-js";
+const { Client, logger, Variables } = camundaPkg;
 
 const bpmn = "./bpmn/";
 const __filename = fileURLToPath(import.meta.url);
@@ -15,16 +17,22 @@ const __dirname = dirname(__filename);
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:3000",
 };
 
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/user", proxy("http://user-microservice:8082"));
-app.use("/order", proxy("http://order-microservice:8083"));
-app.use("/product", proxy("http://product-microservice:8084"));
+
+//camund config
+const config = {
+  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  use: logger,
+  asyncResponseTimeout: 10000,
+};
+
+const client = new Client(config);
 
 const get_all_files = (path_) => {
   let tmp = [];
@@ -46,12 +54,12 @@ const read_file = async (files) => {
 const delete_bpmn_model = async () => {
   console.log("Getting all deployments...");
   try {
-    const dep = await axios.get("http://camunda:8080/engine-rest/deployment");
+    const dep = await axios.get("http://localhost:8080/engine-rest/deployment");
     if (dep) {
       console.log("Deleting all current deployments...");
       for (let i = 0; i < dep.data.length; i++) {
         await axios.delete(
-          `http://camunda:8080/engine-rest/deployment/${dep.data[i].id}?cascade=true`
+          `http://localhost:8080/engine-rest/deployment/${dep.data[i].id}?cascade=true`
         );
       }
       console.log("All deployments deleted !");
@@ -68,7 +76,7 @@ const deploy_bpmn_model = async (path_) => {
   console.log("Loading models...");
   try {
     await axios.post(
-      "http://camunda:8080/engine-rest/deployment/create",
+      "http://localhost:8080/engine-rest/deployment/create",
       form_data,
       {
         headers: {

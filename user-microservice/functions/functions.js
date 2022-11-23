@@ -27,7 +27,7 @@ const generate_token = (data) => {
 };
 
 export const register = async (data) => {
-  const { name, email, password, role } = data;
+  const { name, email, password, role, balance } = data;
   if (!email || !password) throw new Error("Invalid credentials !");
 
   const emailExist = await User.find({ email });
@@ -44,6 +44,7 @@ export const register = async (data) => {
       email,
       password: hashedPassword,
       role,
+      balance,
     });
 
     await newUser.save();
