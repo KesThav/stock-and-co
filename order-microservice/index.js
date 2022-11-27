@@ -8,6 +8,13 @@ import schema from "./schema/schema.js";
 import { subscriptions } from "./functions/subcriptions.js";
 import camundaPkg from "camunda-external-task-client-js";
 const { Client, logger, Variables } = camundaPkg;
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
+import logs from "./functions/logger.js";
 
 export const app = express();
 
@@ -17,7 +24,7 @@ const corsOptions = {
 
 const db_url =
   //"mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
-  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-orders";
+  process.env.order_db_url;
 
 Mongoose.connect(
   db_url,
@@ -55,9 +62,10 @@ app.use(
   })
 );
 
-const port = process.env.PORT || 8083;
+const port = process.env.ORDER_PORT;
 
 app.listen(port, async () => {
   console.log(`Order-microservice listening at http://localhost:${port}`);
+  logs.log("info", `Order-microservice listening at http://localhost:${port}`);
   //load_orders();
 });

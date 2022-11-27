@@ -8,6 +8,13 @@ import schema from "./schema/schema.js";
 import { graphqlHTTP } from "express-graphql";
 import camundaPkg from "camunda-external-task-client-js";
 const { Client, logger, Variables } = camundaPkg;
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, ".env") });
+import logs from "./functions/logger.js";
 
 export const app = express();
 
@@ -17,7 +24,7 @@ const corsOptions = {
 
 const db_url =
   //"mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
-  "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-products";
+  process.env.product_db_url;
 
 Mongoose.connect(
   db_url,
@@ -56,9 +63,13 @@ app.use(
   })
 );
 
-const port = process.env.PORT || 8084;
+const port = process.env.PRODUCT_PORT;
 
 app.listen(port, async () => {
   console.log(`Product-microservice listening at http://localhost:${port}`);
+  logs.log(
+    "info",
+    `Product-microservice listening at http://localhost:${port}`
+  );
   //await load_database();
 });
