@@ -37,6 +37,8 @@ type Mutation {
   createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!): Order
   """update order status"""
   updateOrderStatus(_id: String!, status: String!): Order
+  """Start order with camunda"""
+  startOrder(userid: String, order: OrderInput): String
 }
 
 """This represents a product input"""
@@ -44,4 +46,10 @@ input productOrderInput {
   productid: String
   price: Float
   quantity: Int
+}
+
+"""This represents an order input for camunda"""
+input OrderInput {
+  userid: String
+  products: [productOrderInput]
 }

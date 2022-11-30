@@ -4,6 +4,7 @@ import { Fragment } from "react";
 import Products from "./pages/products";
 import ProductDetail from "./pages/productDetail";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Login from "./pages/login";
 
 const theme = createTheme({
   typography: {
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Products />} />
             <Route path="/product/:productid" element={<ProductDetail />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>

@@ -70,6 +70,8 @@ export type Mutation = {
   createOrder?: Maybe<Order>;
   /** update order status */
   updateOrderStatus?: Maybe<Order>;
+  /** Start order with camunda */
+  startOrder?: Maybe<Scalars['String']>;
 };
 
 
@@ -88,11 +90,24 @@ export type MutationupdateOrderStatusArgs = {
   status: Scalars['String'];
 };
 
+
+/** All mutations */
+export type MutationstartOrderArgs = {
+  userid?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<OrderInput>;
+};
+
 /** This represents a product input */
 export type productOrderInput = {
   productid?: InputMaybe<Scalars['String']>;
   price?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
+};
+
+/** This represents an order input for camunda */
+export type OrderInput = {
+  userid?: InputMaybe<Scalars['String']>;
+  products?: InputMaybe<Array<InputMaybe<productOrderInput>>>;
 };
 
   export type QuerySdk = {
@@ -110,7 +125,9 @@ export type productOrderInput = {
       /** create order **/
   createOrder: InContextSdkMethod<Mutation['createOrder'], MutationcreateOrderArgs, MeshContext>,
   /** update order status **/
-  updateOrderStatus: InContextSdkMethod<Mutation['updateOrderStatus'], MutationupdateOrderStatusArgs, MeshContext>
+  updateOrderStatus: InContextSdkMethod<Mutation['updateOrderStatus'], MutationupdateOrderStatusArgs, MeshContext>,
+  /** Start order with camunda **/
+  startOrder: InContextSdkMethod<Mutation['startOrder'], MutationstartOrderArgs, MeshContext>
   };
 
   export type SubscriptionSdk = {

@@ -1,6 +1,7 @@
 import camundaPkg from "camunda-external-task-client-js";
 const { Client, logger, Variables } = camundaPkg;
 import Order from "../model/order.model.js";
+import { createOrder } from "./functions.js";
 import logs from "./logger.js";
 
 export const subscriptions = (client) => {
@@ -9,14 +10,8 @@ export const subscriptions = (client) => {
     try {
       const order = task.variables.get("order");
       logs.log("info", `listening to create_order of User ${order.userid}`);
-      let newOrder = {};
-      newOrder["userid"] = order.userid;
-      newOrder["total"] = order.total;
-      newOrder["status"] = "Paid";
-      newOrder["products"] = order.products;
 
-      newOrder = new Order(newOrder);
-      await newOrder.save();
+      const newOrder = await createOrder(order);
       const localVariable = new Variables();
       localVariable.set("orderid", newOrder._id);
       logs.log(

@@ -8,6 +8,7 @@ import {
   GraphQLInputObjectType,
   GraphQLFloat,
 } from "graphql";
+import { startInstance } from "../functions/camunda.js";
 import {
   getAllOrders,
   getOrder,
@@ -46,6 +47,15 @@ const orderType = new GraphQLObjectType({
     total: { type: GraphQLFloat },
     status: { type: GraphQLString },
     _id: { type: GraphQLString },
+  }),
+});
+
+const orderTypeInput = new GraphQLInputObjectType({
+  name: "OrderInput",
+  description: "This represents an order input for camunda",
+  fields: () => ({
+    userid: { type: GraphQLString },
+    products: { type: new GraphQLList(productOrderInput) },
   }),
 });
 
@@ -110,6 +120,15 @@ const Mutation = new GraphQLObjectType({
         status: { type: GraphQLNonNull(GraphQLString) },
       },
       resolve: (parent, args) => updateOrderStatus(args._id, args.status),
+    },
+    startOrder: {
+      type: GraphQLString,
+      description: "Start order with camunda",
+      args: {
+        userid: { type: GraphQLString },
+        order: { type: orderTypeInput },
+      },
+      resolve: (parent, args) => startInstance(args),
     },
   }),
 });
