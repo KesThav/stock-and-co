@@ -11,7 +11,11 @@ export const subscriptions = (client) => {
       logs.log("info", `listening to with_point of User ${order.userid}`);
       let oneUser = await User.findOne({ _id: order.userid });
       const localVariable = new Variables();
-      if (oneUser.points >= order.total) {
+      let amount = order.products.reduce(
+        (total, prod) => total + prod.price * prod.quantity,
+        0
+      );
+      if (oneUser.points >= amount) {
         localVariable.set("enough_point", true);
         logs.log("info", `User ${oneUser._id} has enough point.`, {
           user: order.userid,
@@ -33,6 +37,7 @@ export const subscriptions = (client) => {
 
   //update balance
   client.subscribe("with_card", async function ({ task, taskService }) {
+    console.log(task.variables.getAll());
     try {
       let order = task.variables.get("order");
       logs.log("info", `listening to with_card of User ${order.userid}`);

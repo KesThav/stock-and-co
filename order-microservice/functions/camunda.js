@@ -4,7 +4,7 @@ import logs from "../functions/logger.js";
 //all the functions to start camunda with axios
 const escapeJSON = (obj) => {
   return JSON.stringify(obj)
-    .replace(/[\\]/g, "\\")
+    .replace(/[\\]/g, "")
     .replace(/[\"]/g, '"')
     .replace(/[\/]/g, "/")
     .replace(/[\b]/g, "\b")
@@ -41,11 +41,10 @@ export const startInstance = async (data) => {
       "content-type": "application/json",
     };
 
-    console.log(variables);
-
-    await axios.post(
+    const res = await axios.post(
       "http://localhost:8080/engine-rest/process-definition/key/order-process/start",
-      variables
+      variables,
+      headers
     );
     logs.log("info", `Order instance started.`);
   } catch (err) {

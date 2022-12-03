@@ -14,7 +14,6 @@ export const subscriptions = (client) => {
           `listening to update_product_quantity of User ${order.userid}`
         );
         for (let i = 0; i < order.products.length; i++) {
-          console.log(order.products[i].productid);
           let oneProduct = await Product.findOne({
             _id: order.products[i].productid,
           });
@@ -23,7 +22,6 @@ export const subscriptions = (client) => {
             await oneProduct.save();
           }
         }
-        console.log("done");
         await taskService.complete(task);
       } catch (err) {
         logs.logs("error", `update_product_quantity : ${err}`);
