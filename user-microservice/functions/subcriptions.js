@@ -17,6 +17,7 @@ export const subscriptions = (client) => {
       );
       if (oneUser.points >= amount) {
         localVariable.set("enough_point", true);
+        localVariable.set("total", amount);
         logs.log("info", `User ${oneUser._id} has enough point.`, {
           user: order.userid,
         });
@@ -51,10 +52,11 @@ export const subscriptions = (client) => {
   client.subscribe("collect_payment", async function ({ task, taskService }) {
     try {
       const order = task.variables.get("order");
+      const ptype = task.variables.get("ptype");
       logs.log("info", `listening to collect_payment of User ${order.userid}`);
       const oneUser = await User.findOne({ _id: order.userid });
-      if (oneUser && order.type === "Point") {
-        oneUser.points -= order.total;
+      if (oneUser && ptype == "Point") {
+        oneUser.points -= task.variables.get("total");
         await oneUser.save();
         logs.log("info", `Payment of User ${oneUser._id} has been collected.`);
       }

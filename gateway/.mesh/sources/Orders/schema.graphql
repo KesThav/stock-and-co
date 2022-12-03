@@ -22,6 +22,7 @@ type Order {
   total: Float
   status: String
   _id: String
+  type: String
 }
 
 """This represents a product saved in order"""

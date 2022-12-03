@@ -11,6 +11,7 @@ export const subscriptions = (client) => {
       const order = task.variables.get("order");
       logs.log("info", `listening to create_order of User ${order.userid}`);
       order.status = "Paid";
+      order.type = task.variables.get("ptype");
       const newOrder = await createOrder(order);
       const localVariable = new Variables();
       localVariable.set("order", newOrder);

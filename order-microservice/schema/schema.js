@@ -47,6 +47,7 @@ const orderType = new GraphQLObjectType({
     total: { type: GraphQLFloat },
     status: { type: GraphQLString },
     _id: { type: GraphQLString },
+    type: { type: GraphQLString },
   }),
 });
 

@@ -55,6 +55,7 @@ export type Order = {
   total?: Maybe<Scalars['Float']>;
   status?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
 };
 
 /** This represents a product saved in order */
