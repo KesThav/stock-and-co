@@ -14,6 +14,10 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import isAuth from "../utils/isAuth.jsx";
 import { useNavigate } from "react-router-dom";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import { useContext } from "react";
+import { ContextAPI } from "../utils/ContextAPI.jsx";
+import Badge from "@mui/material/Badge";
 
 const pages = ["Profile"];
 
@@ -38,8 +42,17 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const { basket } = useContext(ContextAPI);
+
   return (
-    <AppBar position="sticky" sx={{ boxShadow: "none", marginBottom: "40px" }}>
+    <AppBar
+      position="sticky"
+      sx={{
+        boxShadow: "none",
+        marginBottom: "40px",
+        bgcolor: "#116A57",
+      }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -124,7 +137,17 @@ function ResponsiveAppBar() {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
+            <Badge
+              badgeContent={basket.length}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "left",
+              }}
+              color="secondary"
+            >
+              <ShoppingBasketIcon sx={{ fontSize: 30, marginRight: "10px" }} />
+            </Badge>
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               {isAuth() ? (
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

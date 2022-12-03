@@ -5,6 +5,10 @@ schema {
 
 """All queries"""
 type Query {
+  """A single user"""
+  user(_id: String): User
+  """List all users"""
+  users: [User]
   """A single product"""
   product(id: String): Product
   """List all products"""
@@ -17,14 +21,14 @@ type Query {
   orderByUser(userid: String): [Order]
   """Get orders by product"""
   orderByProduct(productid: String): [Order]
-  """A single user"""
-  user(_id: String): User
-  """List all users"""
-  users: [User]
 }
 
 """All mutations"""
 type Mutation {
+  """register user"""
+  register(name: String!, email: String!, password: String!): jwttoken
+  """login user"""
+  login(email: String!, password: String!): jwttoken
   """add product"""
   addProduct(name: String!, description: String!, type: String!, averageRating: Int, quantity: Int!, price: Float!, images: [String]): Product
   """update product"""
@@ -37,10 +41,19 @@ type Mutation {
   updateOrderStatus(_id: String!, status: String!): Order
   """Start order with camunda"""
   startOrder(userid: String, order: OrderInput, ptype: String): returnMessage
-  """register user"""
-  register(name: String!, email: String!, password: String!): jwttoken
-  """login user"""
-  login(email: String!, password: String!): jwttoken
+}
+
+"""This represents a user"""
+type User {
+  _id: String
+  name: String
+  email: String
+  orders: [Order!]!
+}
+
+"""This represents a jwt token"""
+type jwttoken {
+  token: String!
 }
 
 """This represents a product"""
@@ -96,17 +109,4 @@ type returnMessage {
 input OrderInput {
   userid: String
   products: [productOrderInput]
-}
-
-"""This represents a user"""
-type User {
-  _id: String
-  name: String
-  email: String
-  orders: [Order!]!
-}
-
-"""This represents a jwt token"""
-type jwttoken {
-  token: String!
 }

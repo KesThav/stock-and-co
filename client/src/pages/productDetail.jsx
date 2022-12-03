@@ -9,11 +9,17 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
 import IncrementButton from "../components/incrementButton";
 import UserCard from "../components/userCard";
+import { useContext } from "react";
+import { ContextAPI } from "../utils/ContextAPI";
 
 const ProductDetail = () => {
   const [product, setProduct] = useState([]);
 
   let { productid } = useParams();
+
+  let { basket, setBasket } = useContext(ContextAPI);
+
+  let [quantity, setQuanity] = useState(0);
 
   useEffect(() => {
     const getProducts = async (productid) => {
@@ -85,6 +91,23 @@ const ProductDetail = () => {
         />
       </Paper>
     );
+  };
+
+  const handleBasket = (product, quantity) => {
+    let arr = JSON.parse(localStorage.getItem("basket")) || [];
+
+    const prod = {
+      productid: product._id,
+      name: product.name,
+      description: product.description,
+      images: product.images[0].url,
+      quantity,
+    };
+
+    arr = arr.filter((p) => p.productid !== prod.productid);
+    arr.push(prod);
+    localStorage.setItem("basket", JSON.stringify(arr));
+    setBasket(basket);
   };
 
   return (
@@ -165,9 +188,13 @@ const ProductDetail = () => {
                         }}
                       >
                         {product.quantity > 0 && (
-                          <IncrementButton maxValue={product.quantity} />
+                          <IncrementButton
+                            maxValue={product.quantity}
+                            sq={setQuanity}
+                          />
                         )}
                         <Button
+                          onClick={() => handleBasket(product, quantity)}
                           variant="contained"
                           sx={{
                             padding: "10px 0",
@@ -175,6 +202,7 @@ const ProductDetail = () => {
                             marginLeft: "10px",
                           }}
                           disableElevation
+                          disabled={product.quantity <= 0}
                         >
                           Add to cart
                         </Button>
