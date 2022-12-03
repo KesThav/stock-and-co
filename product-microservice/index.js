@@ -15,6 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 import logs from "./functions/logger.js";
+import { subscriptions } from "./functions/subscriptions.js";
 
 export const app = express();
 
@@ -62,6 +63,16 @@ app.use(
     graphiql: true,
   })
 );
+
+const config = {
+  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  use: logger,
+  asyncResponseTimeout: 10000,
+};
+
+const client = new Client(config);
+
+subscriptions(client);
 
 const port = process.env.PRODUCT_PORT;
 

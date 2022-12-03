@@ -28,6 +28,7 @@ export const createOrder = async (data) => {
   newOrder["total"] = amount;
   newOrder.products = Array.from(data.products);
   newOrder.status = data.status;
+  newOrder.type = data.type;
 
   newOrder = new Order(newOrder);
 

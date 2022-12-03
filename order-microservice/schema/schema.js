@@ -59,6 +59,14 @@ const orderTypeInput = new GraphQLInputObjectType({
   }),
 });
 
+const returnMessage = new GraphQLObjectType({
+  name: "returnMessage",
+  description: "this represents a return message",
+  fields: () => ({
+    message: { type: GraphQLString },
+  }),
+});
+
 const Query = new GraphQLObjectType({
   name: "Query",
   description: "All queries",
@@ -122,11 +130,12 @@ const Mutation = new GraphQLObjectType({
       resolve: (parent, args) => updateOrderStatus(args._id, args.status),
     },
     startOrder: {
-      type: GraphQLString,
+      type: returnMessage,
       description: "Start order with camunda",
       args: {
         userid: { type: GraphQLString },
         order: { type: orderTypeInput },
+        ptype: { type: GraphQLString },
       },
       resolve: (parent, args) => startInstance(args),
     },

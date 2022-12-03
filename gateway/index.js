@@ -24,7 +24,6 @@ app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
 //camund config
 const config = {
   baseUrl: "http://127.0.0.1:8080/engine-rest",
@@ -80,7 +79,7 @@ const deploy_bpmn_model = async (path_) => {
       form_data,
       {
         headers: {
-          "Content-Type": `multipart/form-data;boundary=${form_data._boundary}`,
+          "Content-Type": `multipart/form-data`, //;boundary=${form_data._boundary}
         },
       }
     );

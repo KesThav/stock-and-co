@@ -18,7 +18,7 @@ const userSchema = new Mongoose.Schema(
       type: String,
       required: true,
     },
-    balance: {
+    points: {
       type: Number,
       default: 0,
     },

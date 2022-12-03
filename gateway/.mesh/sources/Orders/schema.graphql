@@ -38,7 +38,7 @@ type Mutation {
   """update order status"""
   updateOrderStatus(_id: String!, status: String!): Order
   """Start order with camunda"""
-  startOrder(userid: String, order: OrderInput): String
+  startOrder(userid: String, order: OrderInput, ptype: String): returnMessage
 }
 
 """This represents a product input"""
@@ -46,6 +46,11 @@ input productOrderInput {
   productid: String
   price: Float
   quantity: Int
+}
+
+"""this represents a return message"""
+type returnMessage {
+  message: String
 }
 
 """This represents an order input for camunda"""

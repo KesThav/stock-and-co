@@ -71,7 +71,7 @@ export type Mutation = {
   /** update order status */
   updateOrderStatus?: Maybe<Order>;
   /** Start order with camunda */
-  startOrder?: Maybe<Scalars['String']>;
+  startOrder?: Maybe<returnMessage>;
 };
 
 
@@ -95,6 +95,7 @@ export type MutationupdateOrderStatusArgs = {
 export type MutationstartOrderArgs = {
   userid?: InputMaybe<Scalars['String']>;
   order?: InputMaybe<OrderInput>;
+  ptype?: InputMaybe<Scalars['String']>;
 };
 
 /** This represents a product input */
@@ -102,6 +103,11 @@ export type productOrderInput = {
   productid?: InputMaybe<Scalars['String']>;
   price?: InputMaybe<Scalars['Float']>;
   quantity?: InputMaybe<Scalars['Int']>;
+};
+
+/** this represents a return message */
+export type returnMessage = {
+  message?: Maybe<Scalars['String']>;
 };
 
 /** This represents an order input for camunda */

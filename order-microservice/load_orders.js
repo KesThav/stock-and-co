@@ -1,6 +1,6 @@
 import axios from "axios";
 import mongoose from "mongoose";
-import Order from "./model/order.model.js";
+import { createOrder } from "./functions/functions.js";
 
 const getProducts = async () => {
   let products = [];
@@ -99,15 +99,15 @@ const load_orders = async () => {
           0
         );
 
-        let newOrder = {};
-        newOrder["userid"] = userData[i]._id;
-        newOrder["total"] = amount;
-        newOrder.products = Array.from(filterProduct);
-        newOrder.status = "Closed";
+        const myorder = {
+          userid: userData[i]._id,
+          products: filterProduct,
+          total: amount,
+          status: "Closed",
+          type: "Card",
+        };
 
-        newOrder = new Order(newOrder);
-
-        await newOrder.save();
+        await createOrder(myorder);
       }
     }
     console.log("Orders loaded !");

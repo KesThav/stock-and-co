@@ -10,10 +10,10 @@ export const subscriptions = (client) => {
     try {
       const order = task.variables.get("order");
       logs.log("info", `listening to create_order of User ${order.userid}`);
-
+      order.status = "Paid";
       const newOrder = await createOrder(order);
       const localVariable = new Variables();
-      localVariable.set("orderid", newOrder._id);
+      localVariable.set("order", newOrder);
       logs.log(
         "info",
         `User ${newOrder.userid} order has been created with id ${newOrder._id} and status Paid.`
@@ -27,15 +27,14 @@ export const subscriptions = (client) => {
   //update order
   client.subscribe("update_order", async function ({ task, taskService }) {
     try {
-      let orderid = task.variables.get("orderid");
       let order = task.variables.get("order");
       logs.log(
         "info",
-        `listening to update_order of User ${order.userid} for Order ${orderid}`
+        `listening to update_order of User ${order.userid} for Order ${order._id}`
       );
 
       let oneOrder = await Order.findOne({
-        _id: task.variables.get("orderid"),
+        _id: order._id,
       });
       if (oneOrder) {
         oneOrder.status = "Closed";
