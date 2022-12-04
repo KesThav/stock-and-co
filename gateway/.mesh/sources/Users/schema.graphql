@@ -16,6 +16,7 @@ type User {
   _id: String
   name: String
   email: String
+  points: Int
 }
 
 """All mutations"""

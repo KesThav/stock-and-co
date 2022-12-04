@@ -48,6 +48,7 @@ type User {
   _id: String
   name: String
   email: String
+  points: Int
   orders: [Order!]!
 }
 

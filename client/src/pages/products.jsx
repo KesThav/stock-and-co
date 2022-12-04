@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import AppBar from "../components/appbar";
 import ProductCard from "../components/ProductCard";
 import { Grid, Box } from "@mui/material";
 
@@ -55,7 +54,6 @@ const Products = () => {
 
   return (
     <Fragment>
-      <AppBar />
       <div
         style={{
           display: "flex",

@@ -37,6 +37,7 @@ export type User = {
   _id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  points?: Maybe<Scalars['Int']>;
 };
 
 /** All mutations */

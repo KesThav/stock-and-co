@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from "react";
-import NavBar from "../components/appbar";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { Grid, Paper, Button, Box, Typography, Rating } from "@mui/material";
@@ -102,6 +101,7 @@ const ProductDetail = () => {
       description: product.description,
       images: product.images[0].url,
       quantity,
+      price: product.price,
     };
 
     arr = arr.filter((p) => p.productid !== prod.productid);
@@ -112,7 +112,6 @@ const ProductDetail = () => {
 
   return (
     <Fragment>
-      <NavBar />
       <div
         style={{
           display: "flex",

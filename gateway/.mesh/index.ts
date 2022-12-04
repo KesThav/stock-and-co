@@ -7,8 +7,8 @@ import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
 import type { ProductsTypes } from './sources/Products/types';
-import type { OrdersTypes } from './sources/Orders/types';
 import type { UsersTypes } from './sources/Users/types';
+import type { OrdersTypes } from './sources/Orders/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -172,6 +172,7 @@ export type User = {
   _id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  points?: Maybe<Scalars['Int']>;
   orders: Array<Order>;
 };
 
@@ -323,11 +324,11 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   jwttoken: ResolverTypeWrapper<jwttoken>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Product: ResolverTypeWrapper<Product>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   images: ResolverTypeWrapper<images>;
   Order: ResolverTypeWrapper<Order>;
   productOrder: ResolverTypeWrapper<productOrder>;
@@ -342,11 +343,11 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   User: User;
   String: Scalars['String'];
+  Int: Scalars['Int'];
   jwttoken: jwttoken;
   Boolean: Scalars['Boolean'];
   Product: Product;
   Float: Scalars['Float'];
-  Int: Scalars['Int'];
   images: images;
   Order: Order;
   productOrder: productOrder;
@@ -381,6 +382,7 @@ export type UserResolvers<ContextType = MeshContext, ParentType extends Resolver
   _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  points?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

@@ -7,6 +7,23 @@ import ProductDetail from "./pages/productDetail";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Login from "./pages/login";
 import { ContextAPI } from "./utils/ContextAPI";
+import Profile from "./pages/profile";
+import jwtDecode from "jwt-decode";
+import Layout from "./components/Layout";
+import axios from "axios";
+import Shopping from "./pages/shopping";
+
+var userData;
+const token = localStorage.getItem("token");
+if (token) {
+  const decodedToken = jwtDecode(token);
+  if (decodedToken.exp * 1000 < Date.now()) {
+    window.location.href = "/";
+    localStorage.removeItem("token");
+  } else {
+    userData = decodedToken;
+  }
+}
 
 const theme = createTheme({
   typography: {
@@ -20,21 +37,106 @@ const theme = createTheme({
       main: "#116A57",
     },
   },
+  shadows: "none",
 });
 
 function App() {
   const [basket, setBasket] = useState(
     JSON.parse(localStorage.getItem("basket")) || []
   );
+
+  const [user, setUser] = useState([]);
+
+  const getUser = async (userid) => {
+    const userQuery = {
+      query: `query getUser($_id : String){
+        user(_id :$_id){
+          _id
+          name
+          email
+          points
+        }
+      }`,
+      variables: { _id: userid },
+    };
+
+    const headers = {
+      "content-type": "application/json",
+    };
+
+    axios({
+      url: process.env.REACT_APP_base_url,
+      method: "post",
+      headers: headers,
+      data: userQuery,
+    })
+      .then((response) => {
+        if (response.data.errors) {
+          throw new Error(response.data.errors[0].message);
+        } else {
+          return response;
+        }
+      })
+      .then((response) => {
+        const user = response.data.data.user;
+        setUser(user);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  function convertMoney(num) {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1'");
+  }
+
   return (
     <Fragment>
-      <ContextAPI.Provider value={{ basket, setBasket }}>
+      <ContextAPI.Provider
+        value={{
+          basket,
+          setBasket,
+          userData,
+          getUser,
+          user,
+          setUser,
+          convertMoney,
+        }}
+      >
         <ThemeProvider theme={theme}>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Products />} />
-              <Route path="/product/:productid" element={<ProductDetail />} />
+              <Route
+                path="/"
+                element={
+                  <Layout d={false}>
+                    <Products />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/product/:productid"
+                element={
+                  <Layout d={false}>
+                    <ProductDetail />
+                  </Layout>
+                }
+              />
               <Route path="/login" element={<Login />} />
+              <Route
+                path="/profile"
+                element={
+                  <Layout d={true}>
+                    <Profile />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/shopping"
+                element={
+                  <Layout d={false}>
+                    <Shopping />
+                  </Layout>
+                }
+              />
             </Routes>
           </BrowserRouter>
         </ThemeProvider>

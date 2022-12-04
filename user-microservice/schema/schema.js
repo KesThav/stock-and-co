@@ -4,6 +4,7 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
+  GraphQLInt,
 } from "graphql";
 import {
   getAllUsers,
@@ -21,6 +22,7 @@ const userType = new GraphQLObjectType({
       type: GraphQLString,
     },
     email: { type: GraphQLString },
+    points: { type: GraphQLInt },
   }),
 });
 
