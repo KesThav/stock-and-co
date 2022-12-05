@@ -9,7 +9,7 @@ export const subscriptions = (client) => {
   client.subscribe("create_order", async function ({ task, taskService }) {
     try {
       const order = task.variables.get("order");
-      logs.log("info", `listening to create_order of User ${order.userid}`);
+      logs.log("info", `Create order | Listening to User ${order.userid}`);
       order.status = "Paid";
       order.type = task.variables.get("ptype");
       const newOrder = await createOrder(order);
@@ -17,11 +17,11 @@ export const subscriptions = (client) => {
       localVariable.set("order", newOrder);
       logs.log(
         "info",
-        `User ${newOrder.userid} order has been created with id ${newOrder._id} and status Paid.`
+        `Create order | User ${newOrder.userid} order has been created with id ${newOrder._id} and status Paid.`
       );
       await taskService.complete(task, localVariable);
     } catch (err) {
-      logs.log("error", `create_order : ${err}`);
+      logs.log("error", `Create order | ${err}`);
     }
   });
 
@@ -31,7 +31,7 @@ export const subscriptions = (client) => {
       let order = task.variables.get("order");
       logs.log(
         "info",
-        `listening to update_order of User ${order.userid} for Order ${order._id}`
+        `Update order | Listening to User ${order.userid} and Order ${order._id}`
       );
 
       let oneOrder = await Order.findOne({
@@ -42,12 +42,12 @@ export const subscriptions = (client) => {
         await oneOrder.save();
         logs.log(
           "info",
-          `User ${oneOrder.userid} order ${oneOrder._id} has been updated with status Closed`
+          `Update order | User ${oneOrder.userid} order ${oneOrder._id} has been updated with status Closed`
         );
         await taskService.complete(task);
       }
     } catch (err) {
-      logs.log("error", `update_order : ${err}`);
+      logs.log("error", `Update order | ${err}`);
     }
   });
 };

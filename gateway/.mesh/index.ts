@@ -6,8 +6,8 @@ import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
-import type { ProductsTypes } from './sources/Products/types';
 import type { UsersTypes } from './sources/Users/types';
+import type { ProductsTypes } from './sources/Products/types';
 import type { OrdersTypes } from './sources/Orders/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -33,6 +33,8 @@ export type Query = {
   user?: Maybe<User>;
   /** List all users */
   users?: Maybe<Array<Maybe<User>>>;
+  /** Query logs */
+  queryLogs?: Maybe<Array<Maybe<logs>>>;
   /** A single product */
   product?: Maybe<Product>;
   /** List all products */
@@ -174,6 +176,13 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   points?: Maybe<Scalars['Int']>;
   orders: Array<Order>;
+};
+
+/** This represents a log */
+export type logs = {
+  message?: Maybe<Scalars['String']>;
+  level?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['String']>;
 };
 
 /** This represents a jwt token */
@@ -325,6 +334,7 @@ export type ResolversTypes = ResolversObject<{
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  logs: ResolverTypeWrapper<logs>;
   jwttoken: ResolverTypeWrapper<jwttoken>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Product: ResolverTypeWrapper<Product>;
@@ -344,6 +354,7 @@ export type ResolversParentTypes = ResolversObject<{
   User: User;
   String: Scalars['String'];
   Int: Scalars['Int'];
+  logs: logs;
   jwttoken: jwttoken;
   Boolean: Scalars['Boolean'];
   Product: Product;
@@ -359,6 +370,7 @@ export type ResolversParentTypes = ResolversObject<{
 export type QueryResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryuserArgs>>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  queryLogs?: Resolver<Maybe<Array<Maybe<ResolversTypes['logs']>>>, ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<QueryproductArgs>>;
   products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType>;
   orders?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType>;
@@ -384,6 +396,13 @@ export type UserResolvers<ContextType = MeshContext, ParentType extends Resolver
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   points?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   orders?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type logsResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['logs'] = ResolversParentTypes['logs']> = ResolversObject<{
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  level?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  timestamp?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -438,6 +457,7 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  logs?: logsResolvers<ContextType>;
   jwttoken?: jwttokenResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   images?: imagesResolvers<ContextType>;

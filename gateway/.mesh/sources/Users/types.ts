@@ -24,6 +24,8 @@ export type Query = {
   user?: Maybe<User>;
   /** List all users */
   users?: Maybe<Array<Maybe<User>>>;
+  /** Query logs */
+  queryLogs?: Maybe<Array<Maybe<logs>>>;
 };
 
 
@@ -38,6 +40,13 @@ export type User = {
   name?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   points?: Maybe<Scalars['Int']>;
+};
+
+/** This represents a log */
+export type logs = {
+  message?: Maybe<Scalars['String']>;
+  level?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['String']>;
 };
 
 /** All mutations */
@@ -72,7 +81,9 @@ export type jwttoken = {
       /** A single user **/
   user: InContextSdkMethod<Query['user'], QueryuserArgs, MeshContext>,
   /** List all users **/
-  users: InContextSdkMethod<Query['users'], {}, MeshContext>
+  users: InContextSdkMethod<Query['users'], {}, MeshContext>,
+  /** Query logs **/
+  queryLogs: InContextSdkMethod<Query['queryLogs'], {}, MeshContext>
   };
 
   export type MutationSdk = {

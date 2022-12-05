@@ -9,6 +9,8 @@ type Query {
   user(_id: String): User
   """List all users"""
   users: [User]
+  """Query logs"""
+  queryLogs: [logs]
   """A single product"""
   product(id: String): Product
   """List all products"""
@@ -50,6 +52,13 @@ type User {
   email: String
   points: Int
   orders: [Order!]!
+}
+
+"""This represents a log"""
+type logs {
+  message: String
+  level: String
+  timestamp: String
 }
 
 """This represents a jwt token"""

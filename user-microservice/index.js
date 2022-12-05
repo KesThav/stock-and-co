@@ -1,3 +1,4 @@
+import "./functions/winston-workaround.js";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -16,6 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 import logs from "./functions/logger.js";
+import { mapLogs } from "./functions/functions.js";
 
 export const app = express();
 
@@ -61,6 +63,25 @@ const client = new Client(config);
 
 subscriptions(client);
 
+app.get("/logs", async (req, res) => {
+  /*const mappedLogs = await new Promise((success, failure) => {
+    const options = {
+      order: "desc",
+      fields: ["level", "message", "timestamp"],
+    };
+
+    logs.query(options, async function (err, results) {
+      if (err) {
+        failure(err);
+      } else {
+        const mappedLogs = mapLogs(results);
+        success(mappedLogs);
+      }
+    });
+  });
+  res.send(mappedLogs);*/
+});
+
 const load_users = async () => {
   console.log("Loading users...");
   for (let i = 0; i < data.length; i++) {
@@ -76,6 +97,5 @@ const port = process.env.USER_PORT;
 
 app.listen(port, async () => {
   console.log(`User-microservice listening at http://localhost:${port}`);
-  logs.log("info", `User-microservice listening at http://localhost:${port}`);
   //await load_users();
 });

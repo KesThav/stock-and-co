@@ -78,9 +78,5 @@ const port = process.env.PRODUCT_PORT;
 
 app.listen(port, async () => {
   console.log(`Product-microservice listening at http://localhost:${port}`);
-  logs.log(
-    "info",
-    `Product-microservice listening at http://localhost:${port}`
-  );
   //await load_database();
 });

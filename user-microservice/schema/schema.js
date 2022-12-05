@@ -10,6 +10,7 @@ import {
   getAllUsers,
   getUser,
   login,
+  getLogs,
   register,
 } from "../functions/functions.js";
 
@@ -34,6 +35,16 @@ const tokenType = new GraphQLObjectType({
   }),
 });
 
+const logsType = new GraphQLObjectType({
+  name: "logs",
+  description: "This represents a log",
+  fields: () => ({
+    message: { type: GraphQLString },
+    level: { type: GraphQLString },
+    timestamp: { type: GraphQLString },
+  }),
+});
+
 const Query = new GraphQLObjectType({
   name: "Query",
   description: "All queries",
@@ -50,6 +61,13 @@ const Query = new GraphQLObjectType({
       type: new GraphQLList(userType),
       description: "List all users",
       resolve: () => getAllUsers(),
+    },
+    queryLogs: {
+      type: new GraphQLList(logsType),
+      description: "Query logs",
+      resolve: () => {
+        return getLogs();
+      },
     },
   }),
 });

@@ -66,6 +66,5 @@ const port = process.env.ORDER_PORT;
 
 app.listen(port, async () => {
   console.log(`Order-microservice listening at http://localhost:${port}`);
-  logs.log("info", `Order-microservice listening at http://localhost:${port}`);
   //load_orders();
 });
