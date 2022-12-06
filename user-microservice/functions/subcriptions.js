@@ -8,12 +8,10 @@ export const subscriptions = (client) => {
   client.subscribe("with_point", async function ({ task, taskService }) {
     try {
       let order = task.variables.get("order");
+      const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `Payment with point | Listening to User ${order.userid}`,
-        {
-          key: "Payment with point",
-        }
+        `ID Payment with point | Order ${orderid} | Step 1 | Listening to User ${order.userid}`
       );
       let oneUser = await User.findOne({ _id: order.userid });
       const localVariable = new Variables();
@@ -26,7 +24,7 @@ export const subscriptions = (client) => {
         localVariable.set("total", amount);
         logs.log(
           "info",
-          `Payment with point | User ${oneUser._id} has enough point.`,
+          `ID Payment with point | Order ${orderid} | Step 1 | User ${oneUser._id} has enough point.`,
           {
             user: order.userid,
           }
@@ -36,7 +34,7 @@ export const subscriptions = (client) => {
         localVariable.set("enough_point", false);
         logs.log(
           "info",
-          `Payment with point | User ${oneUser._id} don't have enough point. Process ends.`,
+          `ID Payment with point | Order ${orderid} | Step 1 | User ${oneUser._id} don't have enough point. Process ends.`,
           { user: order.userid }
         );
         await taskService.complete(task, localVariable);
@@ -51,10 +49,14 @@ export const subscriptions = (client) => {
     console.log(task.variables.getAll());
     try {
       let order = task.variables.get("order");
-      logs.log("info", `Payment with card | Listening to User ${order.userid}`);
+      const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `Payment with card | User ${order.userid} payment is complete.`
+        `ID Payment with card | Order ${orderid} | Step 1 | Listening to User ${order.userid}`
+      );
+      logs.log(
+        "info",
+        `ID Payment with card | Order ${orderid} | Step 1 | User ${order.userid} payment is complete.`
       );
       await taskService.complete(task);
     } catch (err) {
@@ -66,27 +68,35 @@ export const subscriptions = (client) => {
     try {
       const order = task.variables.get("order");
       const ptype = task.variables.get("ptype");
-      logs.log("info", `Collect payment | Listening to User ${order.userid}`);
+      const orderid = task.variables.get("orderid");
+      logs.log(
+        "info",
+        `ID Collect payment | Order ${orderid} | Step 2 | Listening to User ${order.userid}`
+      );
       const oneUser = await User.findOne({ _id: order.userid });
       if (oneUser && ptype == "Point") {
         oneUser.points -= task.variables.get("total");
         await oneUser.save();
         logs.log(
           "info",
-          `Collect payment | Payment of User ${oneUser._id} collected.`
+          `ID Collect payment | Order ${orderid} | Step 2 | Payment of User ${oneUser._id} collected.`
         );
       }
 
       await taskService.complete(task);
     } catch (err) {
-      logs.log("error", `Collect payment |  ${err}`);
+      logs.log("error", `Collect payment | ${err}`);
     }
   });
 
   client.subscribe("update_point", async function ({ task, taskService }) {
     try {
       const order = task.variables.get("order");
-      logs.log("info", `Update points | listening to User ${order.userid}`);
+      const orderid = task.variables.get("orderid");
+      logs.log(
+        "info",
+        `ID Update points | Order ${orderid} | Step 4 | listening to User ${order.userid}`
+      );
       const oneUser = await User.findOne({ _id: order.userid });
       if (oneUser) {
         const newPoints = Math.floor(order.total / 100);
@@ -94,7 +104,7 @@ export const subscriptions = (client) => {
         await oneUser.save();
         logs.log(
           "info",
-          `Update points | User ${oneUser._id} has gained by ${newPoints} points.`
+          `ID Update points | Order ${orderid} | Step 4 | User ${oneUser._id} has gained by ${newPoints} points.`
         );
       }
       await taskService.complete(task);

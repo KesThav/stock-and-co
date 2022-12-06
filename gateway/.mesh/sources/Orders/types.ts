@@ -56,6 +56,7 @@ export type Order = {
   status?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+  orderid?: Maybe<Scalars['String']>;
 };
 
 /** This represents a product saved in order */
@@ -82,6 +83,7 @@ export type MutationcreateOrderArgs = {
   products?: InputMaybe<Array<productOrderInput>>;
   total: Scalars['Int'];
   status: Scalars['String'];
+  orderid?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -97,6 +99,7 @@ export type MutationstartOrderArgs = {
   userid?: InputMaybe<Scalars['String']>;
   order?: InputMaybe<OrderInput>;
   ptype?: InputMaybe<Scalars['String']>;
+  orderid?: InputMaybe<Scalars['String']>;
 };
 
 /** This represents a product input */
@@ -115,6 +118,7 @@ export type returnMessage = {
 export type OrderInput = {
   userid?: InputMaybe<Scalars['String']>;
   products?: InputMaybe<Array<InputMaybe<productOrderInput>>>;
+  orderid?: InputMaybe<Scalars['String']>;
 };
 
   export type QuerySdk = {

@@ -10,7 +10,11 @@ const logs = createLogger({
       options: {
         useUnifiedTopology: true,
       },
-      format: format.combine(format.timestamp(), format.json()),
+      format: format.combine(
+        format.timestamp(),
+        format.json(),
+        format.metadata()
+      ),
     }),
     ,
     new transports.MongoDB({

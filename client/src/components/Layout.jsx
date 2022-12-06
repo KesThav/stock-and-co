@@ -22,11 +22,15 @@ import IconButton from "@mui/material/IconButton";
 import Avatar from "@mui/material/Avatar";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import Badge from "@mui/material/Badge";
+import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import Face6OutlinedIcon from "@mui/icons-material/Face6Outlined";
+import HistoryEduOutlinedIcon from "@mui/icons-material/HistoryEduOutlined";
 
 const drawerWidth = 240;
 
 export default function ClippedDrawer({ children, d, window }) {
-  const { basket } = useContext(ContextAPI);
+  const { basket, userData, count } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -38,29 +42,46 @@ export default function ClippedDrawer({ children, d, window }) {
       <Toolbar />
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {[
+          {
+            icon: <Face6OutlinedIcon />,
+            name: "Profile",
+            permission: ["admin", "user"],
+            link: "/profile",
+          },
+          {
+            icon: <PendingActionsOutlinedIcon />,
+            name: "Pending order",
+            permission: ["admin"],
+            link: "/pending-order",
+          },
+          {
+            icon: <SearchOutlinedIcon />,
+            name: "Search for user",
+            permission: ["admin"],
+            link: "/search-user",
+          },
+          {
+            icon: <HistoryEduOutlinedIcon />,
+            name: "Logs",
+            permission: ["admin"],
+            link: "/logs",
+          },
+        ].map(
+          (item, index) =>
+            //check if user is admin or not
+            userData &&
+            item.permission.includes(userData.role) && (
+              <ListItem
+                button
+                key={item.name}
+                onClick={() => navigate(`/${item.name.toLowerCase()}`)}
+              >
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.name} />
+              </ListItem>
+            )
+        )}
       </List>
     </div>
   );
@@ -141,7 +162,10 @@ export default function ClippedDrawer({ children, d, window }) {
         <>
           <Box
             component="nav"
-            sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+            sx={{
+              width: { sm: drawerWidth, zIndex: 1 },
+              flexShrink: { sm: 0 },
+            }}
             aria-label="mailbox folders"
           >
             <Drawer

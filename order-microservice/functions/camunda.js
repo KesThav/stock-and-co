@@ -15,7 +15,11 @@ const escapeJSON = (obj) => {
 };
 
 export const startInstance = async (data) => {
-  const { userid, order, ptype } = data;
+  const { userid, order, ptype, orderid } = data;
+
+  if (!userid || !order || !ptype || !orderid) {
+    throw new Error("Missing data !");
+  }
 
   try {
     if (ptype !== "Card" && ptype !== "Point") {
@@ -24,6 +28,9 @@ export const startInstance = async (data) => {
 
     const variables = {
       variables: {
+        orderid: {
+          value: orderid,
+        },
         userid: {
           value: userid,
         },

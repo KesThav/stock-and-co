@@ -16,8 +16,6 @@ import { useContext } from "react";
 import { ContextAPI } from "../utils/ContextAPI";
 
 const Orderlist = ({ order }) => {
-
-
   const { convertMoney } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
@@ -56,7 +54,7 @@ const Orderlist = ({ order }) => {
             }}
           >
             <Box>
-              <Typography>Commande {order._id}</Typography>
+              <Typography>Commande {order.orderid}</Typography>
               <Typography>CHF {convertMoney(order.total)}</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -93,6 +91,10 @@ const Orderlist = ({ order }) => {
                     <Typography
                       variant="body1"
                       onClick={() => navigate(`/product/${prod.productid}`)}
+                      sx={{
+                        cursor: "pointer",
+                        color: "#1F6A57",
+                      }}
                     >
                       {prod.productDetails.name}
                     </Typography>

@@ -48,6 +48,7 @@ const orderType = new GraphQLObjectType({
     status: { type: GraphQLString },
     _id: { type: GraphQLString },
     type: { type: GraphQLString },
+    orderid: { type: GraphQLString },
   }),
 });
 
@@ -57,6 +58,7 @@ const orderTypeInput = new GraphQLInputObjectType({
   fields: () => ({
     userid: { type: GraphQLString },
     products: { type: new GraphQLList(productOrderInput) },
+    orderid: { type: GraphQLString },
   }),
 });
 
@@ -118,6 +120,7 @@ const Mutation = new GraphQLObjectType({
         },
         total: { type: GraphQLNonNull(GraphQLInt) },
         status: { type: GraphQLNonNull(GraphQLString) },
+        orderid: { type: GraphQLString },
       },
       resolve: (parents, args) => createOrder(args),
     },
@@ -137,6 +140,7 @@ const Mutation = new GraphQLObjectType({
         userid: { type: GraphQLString },
         order: { type: orderTypeInput },
         ptype: { type: GraphQLString },
+        orderid: { type: GraphQLString },
       },
       resolve: (parent, args) => startInstance(args),
     },

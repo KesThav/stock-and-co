@@ -16,7 +16,7 @@ const ProductDetail = () => {
 
   let { productid } = useParams();
 
-  let { basket, setBasket } = useContext(ContextAPI);
+  let { basket, setBasket, setCount, count } = useContext(ContextAPI);
 
   let [quantity, setQuanity] = useState(0);
 
@@ -68,7 +68,7 @@ const ProductDetail = () => {
     };
 
     productid && getProducts(productid);
-  }, []);
+  }, [count]);
 
   const Item = (props) => {
     return (
@@ -108,6 +108,7 @@ const ProductDetail = () => {
     arr.push(prod);
     localStorage.setItem("basket", JSON.stringify(arr));
     setBasket(basket);
+    setCount((count) => count + 1);
   };
 
   return (

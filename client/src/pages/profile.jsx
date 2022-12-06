@@ -26,7 +26,7 @@ const Profile = () => {
             }
           }
           status
-          _id
+          orderid
           
           total
         }
@@ -65,7 +65,9 @@ const Profile = () => {
 
   return (
     <Fragment>
-      <Typography>My data</Typography>
+      <Typography variant="h5">
+        <strong>My data</strong>
+      </Typography>
       {user && (
         <Card
           sx={{
@@ -96,9 +98,13 @@ const Profile = () => {
         </Card>
       )}
 
-      <Typography>Orders</Typography>
+      <Typography variant="h5">
+        <strong>Orders</strong>
+      </Typography>
       {orders &&
-        orders.map((order, idx) => <Orderlist key={order._id} order={order} />)}
+        orders.map((order, idx) => (
+          <Orderlist key={order.orderid} order={order} />
+        ))}
     </Fragment>
   );
 };

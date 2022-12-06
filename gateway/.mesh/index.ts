@@ -6,9 +6,9 @@ import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
-import type { UsersTypes } from './sources/Users/types';
 import type { ProductsTypes } from './sources/Products/types';
 import type { OrdersTypes } from './sources/Orders/types';
+import type { UsersTypes } from './sources/Users/types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -29,16 +29,6 @@ export type Scalars = {
 
 /** All queries */
 export type Query = {
-  /** A single user */
-  user?: Maybe<User>;
-  /** List all users */
-  users?: Maybe<Array<Maybe<User>>>;
-  /** Query logs */
-  queryLogs?: Maybe<Array<Maybe<logs>>>;
-  /** A single product */
-  product?: Maybe<Product>;
-  /** List all products */
-  products?: Maybe<Array<Maybe<Product>>>;
   /** List all orders */
   orders?: Maybe<Array<Maybe<Order>>>;
   /** A single order */
@@ -47,18 +37,16 @@ export type Query = {
   orderByUser?: Maybe<Array<Maybe<Order>>>;
   /** Get orders by product */
   orderByProduct?: Maybe<Array<Maybe<Order>>>;
-};
-
-
-/** All queries */
-export type QueryuserArgs = {
-  _id?: InputMaybe<Scalars['String']>;
-};
-
-
-/** All queries */
-export type QueryproductArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  /** A single product */
+  product?: Maybe<Product>;
+  /** List all products */
+  products?: Maybe<Array<Maybe<Product>>>;
+  /** A single user */
+  user?: Maybe<User>;
+  /** List all users */
+  users?: Maybe<Array<Maybe<User>>>;
+  /** Query logs */
+  queryLogs?: Maybe<Array<Maybe<logs>>>;
 };
 
 
@@ -79,39 +67,62 @@ export type QueryorderByProductArgs = {
   productid?: InputMaybe<Scalars['String']>;
 };
 
+
+/** All queries */
+export type QueryproductArgs = {
+  id?: InputMaybe<Scalars['String']>;
+};
+
+
+/** All queries */
+export type QueryuserArgs = {
+  _id?: InputMaybe<Scalars['String']>;
+};
+
 /** All mutations */
 export type Mutation = {
-  /** register user */
-  register?: Maybe<jwttoken>;
-  /** login user */
-  login?: Maybe<jwttoken>;
-  /** add product */
-  addProduct?: Maybe<Product>;
-  /** update product */
-  updateProduct?: Maybe<Product>;
-  /** delete product */
-  deleteProduct?: Maybe<Product>;
   /** create order */
   createOrder?: Maybe<Order>;
   /** update order status */
   updateOrderStatus?: Maybe<Order>;
   /** Start order with camunda */
   startOrder?: Maybe<returnMessage>;
+  /** add product */
+  addProduct?: Maybe<Product>;
+  /** update product */
+  updateProduct?: Maybe<Product>;
+  /** delete product */
+  deleteProduct?: Maybe<Product>;
+  /** register user */
+  register?: Maybe<jwttoken>;
+  /** login user */
+  login?: Maybe<jwttoken>;
 };
 
 
 /** All mutations */
-export type MutationregisterArgs = {
-  name: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type MutationcreateOrderArgs = {
+  userid: Scalars['String'];
+  products?: InputMaybe<Array<productOrderInput>>;
+  total: Scalars['Int'];
+  status: Scalars['String'];
+  orderid?: InputMaybe<Scalars['String']>;
 };
 
 
 /** All mutations */
-export type MutationloginArgs = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+export type MutationupdateOrderStatusArgs = {
+  _id: Scalars['String'];
+  status: Scalars['String'];
+};
+
+
+/** All mutations */
+export type MutationstartOrderArgs = {
+  userid?: InputMaybe<Scalars['String']>;
+  order?: InputMaybe<OrderInput>;
+  ptype?: InputMaybe<Scalars['String']>;
+  orderid?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -147,65 +158,17 @@ export type MutationdeleteProductArgs = {
 
 
 /** All mutations */
-export type MutationcreateOrderArgs = {
-  userid: Scalars['String'];
-  products?: InputMaybe<Array<productOrderInput>>;
-  total: Scalars['Int'];
-  status: Scalars['String'];
-};
-
-
-/** All mutations */
-export type MutationupdateOrderStatusArgs = {
-  _id: Scalars['String'];
-  status: Scalars['String'];
-};
-
-
-/** All mutations */
-export type MutationstartOrderArgs = {
-  userid?: InputMaybe<Scalars['String']>;
-  order?: InputMaybe<OrderInput>;
-  ptype?: InputMaybe<Scalars['String']>;
-};
-
-/** This represents a user */
-export type User = {
-  _id?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
-  points?: Maybe<Scalars['Int']>;
-  orders: Array<Order>;
-};
-
-/** This represents a log */
-export type logs = {
-  message?: Maybe<Scalars['String']>;
-  level?: Maybe<Scalars['String']>;
-  timestamp?: Maybe<Scalars['String']>;
-};
-
-/** This represents a jwt token */
-export type jwttoken = {
-  token: Scalars['String'];
-};
-
-/** This represents a product */
-export type Product = {
-  _id?: Maybe<Scalars['String']>;
+export type MutationregisterArgs = {
   name: Scalars['String'];
-  description: Scalars['String'];
-  type: Scalars['String'];
-  averageRating?: Maybe<Scalars['Float']>;
-  quantity: Scalars['Int'];
-  price: Scalars['Float'];
-  images?: Maybe<Array<Maybe<images>>>;
-  orderList: Array<Order>;
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
-/** This represents a product image */
-export type images = {
-  url?: Maybe<Scalars['String']>;
+
+/** All mutations */
+export type MutationloginArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
 };
 
 /** This represents an order */
@@ -216,6 +179,7 @@ export type Order = {
   status?: Maybe<Scalars['String']>;
   _id?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
+  orderid?: Maybe<Scalars['String']>;
   userDetails: User;
 };
 
@@ -243,6 +207,46 @@ export type returnMessage = {
 export type OrderInput = {
   userid?: InputMaybe<Scalars['String']>;
   products?: InputMaybe<Array<InputMaybe<productOrderInput>>>;
+  orderid?: InputMaybe<Scalars['String']>;
+};
+
+/** This represents a product */
+export type Product = {
+  _id?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  description: Scalars['String'];
+  type: Scalars['String'];
+  averageRating?: Maybe<Scalars['Float']>;
+  quantity: Scalars['Int'];
+  price: Scalars['Float'];
+  images?: Maybe<Array<Maybe<images>>>;
+  orderList: Array<Order>;
+};
+
+/** This represents a product image */
+export type images = {
+  url?: Maybe<Scalars['String']>;
+};
+
+/** This represents a user */
+export type User = {
+  _id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  points?: Maybe<Scalars['Int']>;
+  orders: Array<Order>;
+};
+
+/** This represents a log */
+export type logs = {
+  message?: Maybe<Scalars['String']>;
+  level?: Maybe<Scalars['String']>;
+  timestamp?: Maybe<Scalars['String']>;
+};
+
+/** This represents a jwt token */
+export type jwttoken = {
+  token: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -331,63 +335,106 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
-  User: ResolverTypeWrapper<User>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  logs: ResolverTypeWrapper<logs>;
-  jwttoken: ResolverTypeWrapper<jwttoken>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Product: ResolverTypeWrapper<Product>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
-  images: ResolverTypeWrapper<images>;
   Order: ResolverTypeWrapper<Order>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   productOrder: ResolverTypeWrapper<productOrder>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   productOrderInput: productOrderInput;
   returnMessage: ResolverTypeWrapper<returnMessage>;
   OrderInput: OrderInput;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Product: ResolverTypeWrapper<Product>;
+  images: ResolverTypeWrapper<images>;
+  User: ResolverTypeWrapper<User>;
+  logs: ResolverTypeWrapper<logs>;
+  jwttoken: ResolverTypeWrapper<jwttoken>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Query: {};
   Mutation: {};
-  User: User;
-  String: Scalars['String'];
-  Int: Scalars['Int'];
-  logs: logs;
-  jwttoken: jwttoken;
-  Boolean: Scalars['Boolean'];
-  Product: Product;
-  Float: Scalars['Float'];
-  images: images;
   Order: Order;
+  String: Scalars['String'];
   productOrder: productOrder;
+  Float: Scalars['Float'];
+  Int: Scalars['Int'];
   productOrderInput: productOrderInput;
   returnMessage: returnMessage;
   OrderInput: OrderInput;
+  Boolean: Scalars['Boolean'];
+  Product: Product;
+  images: images;
+  User: User;
+  logs: logs;
+  jwttoken: jwttoken;
 }>;
 
 export type QueryResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryuserArgs>>;
-  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
-  queryLogs?: Resolver<Maybe<Array<Maybe<ResolversTypes['logs']>>>, ParentType, ContextType>;
-  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<QueryproductArgs>>;
-  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType>;
   orders?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType>;
   order?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType, Partial<QueryorderArgs>>;
   orderByUser?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType, Partial<QueryorderByUserArgs>>;
   orderByProduct?: Resolver<Maybe<Array<Maybe<ResolversTypes['Order']>>>, ParentType, ContextType, Partial<QueryorderByProductArgs>>;
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, Partial<QueryproductArgs>>;
+  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['Product']>>>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, Partial<QueryuserArgs>>;
+  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+  queryLogs?: Resolver<Maybe<Array<Maybe<ResolversTypes['logs']>>>, ParentType, ContextType>;
 }>;
 
 export type MutationResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  register?: Resolver<Maybe<ResolversTypes['jwttoken']>, ParentType, ContextType, RequireFields<MutationregisterArgs, 'name' | 'email' | 'password'>>;
-  login?: Resolver<Maybe<ResolversTypes['jwttoken']>, ParentType, ContextType, RequireFields<MutationloginArgs, 'email' | 'password'>>;
-  addProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationaddProductArgs, 'name' | 'description' | 'type' | 'quantity' | 'price'>>;
-  updateProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationupdateProductArgs, '_id'>>;
-  deleteProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationdeleteProductArgs, '_id'>>;
   createOrder?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<MutationcreateOrderArgs, 'userid' | 'total' | 'status'>>;
   updateOrderStatus?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType, RequireFields<MutationupdateOrderStatusArgs, '_id' | 'status'>>;
   startOrder?: Resolver<Maybe<ResolversTypes['returnMessage']>, ParentType, ContextType, Partial<MutationstartOrderArgs>>;
+  addProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationaddProductArgs, 'name' | 'description' | 'type' | 'quantity' | 'price'>>;
+  updateProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationupdateProductArgs, '_id'>>;
+  deleteProduct?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType, RequireFields<MutationdeleteProductArgs, '_id'>>;
+  register?: Resolver<Maybe<ResolversTypes['jwttoken']>, ParentType, ContextType, RequireFields<MutationregisterArgs, 'name' | 'email' | 'password'>>;
+  login?: Resolver<Maybe<ResolversTypes['jwttoken']>, ParentType, ContextType, RequireFields<MutationloginArgs, 'email' | 'password'>>;
+}>;
+
+export type OrderResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = ResolversObject<{
+  userid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['productOrder']>>>, ParentType, ContextType>;
+  total?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  orderid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  userDetails?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type productOrderResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['productOrder'] = ResolversParentTypes['productOrder']> = ResolversObject<{
+  productid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  productDetails?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type returnMessageResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['returnMessage'] = ResolversParentTypes['returnMessage']> = ResolversObject<{
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ProductResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
+  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  averageRating?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  images?: Resolver<Maybe<Array<Maybe<ResolversTypes['images']>>>, ParentType, ContextType>;
+  orderList?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type imagesResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['images'] = ResolversParentTypes['images']> = ResolversObject<{
+  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type UserResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
@@ -411,63 +458,21 @@ export type jwttokenResolvers<ContextType = MeshContext, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
-export type ProductResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
-  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  averageRating?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  images?: Resolver<Maybe<Array<Maybe<ResolversTypes['images']>>>, ParentType, ContextType>;
-  orderList?: Resolver<Array<ResolversTypes['Order']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type imagesResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['images'] = ResolversParentTypes['images']> = ResolversObject<{
-  url?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type OrderResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Order'] = ResolversParentTypes['Order']> = ResolversObject<{
-  userid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  products?: Resolver<Maybe<Array<Maybe<ResolversTypes['productOrder']>>>, ParentType, ContextType>;
-  total?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  _id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  type?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  userDetails?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type productOrderResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['productOrder'] = ResolversParentTypes['productOrder']> = ResolversObject<{
-  productid?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
-  quantity?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  productDetails?: Resolver<ResolversTypes['Product'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export type returnMessageResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['returnMessage'] = ResolversParentTypes['returnMessage']> = ResolversObject<{
-  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
 export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
-  logs?: logsResolvers<ContextType>;
-  jwttoken?: jwttokenResolvers<ContextType>;
-  Product?: ProductResolvers<ContextType>;
-  images?: imagesResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
   productOrder?: productOrderResolvers<ContextType>;
   returnMessage?: returnMessageResolvers<ContextType>;
+  Product?: ProductResolvers<ContextType>;
+  images?: imagesResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
+  logs?: logsResolvers<ContextType>;
+  jwttoken?: jwttokenResolvers<ContextType>;
 }>;
 
 
-export type MeshContext = UsersTypes.Context & ProductsTypes.Context & OrdersTypes.Context & BaseMeshContext;
+export type MeshContext = OrdersTypes.Context & ProductsTypes.Context & UsersTypes.Context & BaseMeshContext;
 
 
 const baseDir = pathModule.join(typeof __dirname === 'string' ? __dirname : '/', '..');

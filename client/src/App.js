@@ -12,6 +12,7 @@ import jwtDecode from "jwt-decode";
 import Layout from "./components/Layout";
 import axios from "axios";
 import Shopping from "./pages/shopping";
+import Logs from "./pages/logs";
 
 var userData;
 const token = localStorage.getItem("token");
@@ -84,9 +85,11 @@ function App() {
       .catch((error) => console.log(error));
   };
 
-  function convertMoney(num) {
+  const convertMoney = (num) => {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1'");
-  }
+  };
+
+  const [count, setCount] = useState(0);
 
   return (
     <Fragment>
@@ -99,6 +102,8 @@ function App() {
           user,
           setUser,
           convertMoney,
+          setCount,
+          count,
         }}
       >
         <ThemeProvider theme={theme}>
@@ -126,6 +131,14 @@ function App() {
                 element={
                   <Layout d={true}>
                     <Profile />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/logs"
+                element={
+                  <Layout d={true}>
+                    <Logs />
                   </Layout>
                 }
               />

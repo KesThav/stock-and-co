@@ -6,7 +6,7 @@ import Mongoose from "mongoose";
 import schema from "./schema/schema.js";
 import { graphqlHTTP } from "express-graphql";
 import data from "./data/fake_data.js";
-import { register } from "./functions/functions.js";
+import { getLogs, register } from "./functions/functions.js";
 import { subscriptions } from "./functions/subcriptions.js";
 import camundaPkg from "camunda-external-task-client-js";
 const { Client, logger, Variables } = camundaPkg;
@@ -62,25 +62,6 @@ const config = {
 const client = new Client(config);
 
 subscriptions(client);
-
-app.get("/logs", async (req, res) => {
-  /*const mappedLogs = await new Promise((success, failure) => {
-    const options = {
-      order: "desc",
-      fields: ["level", "message", "timestamp"],
-    };
-
-    logs.query(options, async function (err, results) {
-      if (err) {
-        failure(err);
-      } else {
-        const mappedLogs = mapLogs(results);
-        success(mappedLogs);
-      }
-    });
-  });
-  res.send(mappedLogs);*/
-});
 
 const load_users = async () => {
   console.log("Loading users...");

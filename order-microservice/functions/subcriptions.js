@@ -9,7 +9,11 @@ export const subscriptions = (client) => {
   client.subscribe("create_order", async function ({ task, taskService }) {
     try {
       const order = task.variables.get("order");
-      logs.log("info", `Create order | Listening to User ${order.userid}`);
+      const orderid = task.variables.get("orderid");
+      logs.log(
+        "info",
+        `ID Create order | Order ${orderid} | Step 3 | $Listening to User ${order.userid}`
+      );
       order.status = "Paid";
       order.type = task.variables.get("ptype");
       const newOrder = await createOrder(order);
@@ -17,11 +21,11 @@ export const subscriptions = (client) => {
       localVariable.set("order", newOrder);
       logs.log(
         "info",
-        `Create order | User ${newOrder.userid} order has been created with id ${newOrder._id} and status Paid.`
+        `ID Create order | Order ${orderid} | Step 3 | User ${newOrder.userid} order has been created with id ${newOrder._id} and status Paid.`
       );
       await taskService.complete(task, localVariable);
     } catch (err) {
-      logs.log("error", `Create order | ${err}`);
+      logs.log("error", `Create order | Order ${orderid} | ${err}`);
     }
   });
 
@@ -29,9 +33,10 @@ export const subscriptions = (client) => {
   client.subscribe("update_order", async function ({ task, taskService }) {
     try {
       let order = task.variables.get("order");
+      const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `Update order | Listening to User ${order.userid} and Order ${order._id}`
+        `ID Update order | Order ${orderid} | Step 5 | Listening to User ${order.userid} and Order ${order.orderid}`
       );
 
       let oneOrder = await Order.findOne({
@@ -42,12 +47,12 @@ export const subscriptions = (client) => {
         await oneOrder.save();
         logs.log(
           "info",
-          `Update order | User ${oneOrder.userid} order ${oneOrder._id} has been updated with status Closed`
+          `ID Update order | Order ${orderid} | Step 5 | User ${oneOrder.userid} order ${oneOrder.orderid} has been updated with status Closed`
         );
         await taskService.complete(task);
       }
     } catch (err) {
-      logs.log("error", `Update order | ${err}`);
+      logs.log("error", `Update order | Order ${orderid} | ${err}`);
     }
   });
 };

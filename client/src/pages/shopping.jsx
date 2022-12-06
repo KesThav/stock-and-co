@@ -3,6 +3,7 @@ import React, { Fragment, useContext } from "react";
 import { ContextAPI } from "../utils/ContextAPI";
 import ShoppingCard from "../components/shoppingCard";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 const Shopping = () => {
   const { basket, userData } = useContext(ContextAPI);
@@ -18,20 +19,22 @@ const Shopping = () => {
   };
 
   const startPayment = () => {
+    const orderid = uuidv4();
     const products = basket.map((b) => ({
       quantity: b.quantity,
       price: b.price,
       productid: b.productid,
     }));
     const paymentMutation = {
-      query: `mutation startOrderInstance($userid: String, $order : OrderInput, $ptype : String) {
-        startOrder(userid:$userid, order: $order, ptype: $ptype){
+      query: `mutation startOrderInstance($userid: String, $order : OrderInput, $ptype : String,$orderid: String) {
+        startOrder(userid:$userid, order: $order, ptype: $ptype, orderid: $orderid){
           message
         }
       }`,
       variables: {
         userid: userData._id,
-        order: { products: products, userid: userData._id },
+        orderid: orderid,
+        order: { products: products, userid: userData._id, orderid: orderid },
         ptype: "Card",
       },
     };

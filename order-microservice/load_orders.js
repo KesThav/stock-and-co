@@ -1,6 +1,7 @@
 import axios from "axios";
 import mongoose from "mongoose";
 import { createOrder } from "./functions/functions.js";
+import { v4 as uuidv4 } from "uuid";
 
 const getProducts = async () => {
   let products = [];
@@ -100,6 +101,7 @@ const load_orders = async () => {
         );
 
         const myorder = {
+          orderid: uuidv4(),
           userid: userData[i]._id,
           products: filterProduct,
           total: amount,

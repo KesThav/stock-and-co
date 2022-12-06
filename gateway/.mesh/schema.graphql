@@ -5,16 +5,6 @@ schema {
 
 """All queries"""
 type Query {
-  """A single user"""
-  user(_id: String): User
-  """List all users"""
-  users: [User]
-  """Query logs"""
-  queryLogs: [logs]
-  """A single product"""
-  product(id: String): Product
-  """List all products"""
-  products: [Product]
   """List all orders"""
   orders: [Order]
   """A single order"""
@@ -23,65 +13,36 @@ type Query {
   orderByUser(userid: String): [Order]
   """Get orders by product"""
   orderByProduct(productid: String): [Order]
+  """A single product"""
+  product(id: String): Product
+  """List all products"""
+  products: [Product]
+  """A single user"""
+  user(_id: String): User
+  """List all users"""
+  users: [User]
+  """Query logs"""
+  queryLogs: [logs]
 }
 
 """All mutations"""
 type Mutation {
-  """register user"""
-  register(name: String!, email: String!, password: String!): jwttoken
-  """login user"""
-  login(email: String!, password: String!): jwttoken
+  """create order"""
+  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!, orderid: String): Order
+  """update order status"""
+  updateOrderStatus(_id: String!, status: String!): Order
+  """Start order with camunda"""
+  startOrder(userid: String, order: OrderInput, ptype: String, orderid: String): returnMessage
   """add product"""
   addProduct(name: String!, description: String!, type: String!, averageRating: Int, quantity: Int!, price: Float!, images: [String]): Product
   """update product"""
   updateProduct(_id: String!, name: String, description: String, type: String, averageRating: Int, quantity: Int, price: Float, images: [String]): Product
   """delete product"""
   deleteProduct(_id: String!): Product
-  """create order"""
-  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!): Order
-  """update order status"""
-  updateOrderStatus(_id: String!, status: String!): Order
-  """Start order with camunda"""
-  startOrder(userid: String, order: OrderInput, ptype: String): returnMessage
-}
-
-"""This represents a user"""
-type User {
-  _id: String
-  name: String
-  email: String
-  points: Int
-  orders: [Order!]!
-}
-
-"""This represents a log"""
-type logs {
-  message: String
-  level: String
-  timestamp: String
-}
-
-"""This represents a jwt token"""
-type jwttoken {
-  token: String!
-}
-
-"""This represents a product"""
-type Product {
-  _id: String
-  name: String!
-  description: String!
-  type: String!
-  averageRating: Float
-  quantity: Int!
-  price: Float!
-  images: [images]
-  orderList: [Order!]!
-}
-
-"""This represents a product image"""
-type images {
-  url: String
+  """register user"""
+  register(name: String!, email: String!, password: String!): jwttoken
+  """login user"""
+  login(email: String!, password: String!): jwttoken
 }
 
 """This represents an order"""
@@ -92,6 +53,7 @@ type Order {
   status: String
   _id: String
   type: String
+  orderid: String
   userDetails: User!
 }
 
@@ -119,4 +81,44 @@ type returnMessage {
 input OrderInput {
   userid: String
   products: [productOrderInput]
+  orderid: String
+}
+
+"""This represents a product"""
+type Product {
+  _id: String
+  name: String!
+  description: String!
+  type: String!
+  averageRating: Float
+  quantity: Int!
+  price: Float!
+  images: [images]
+  orderList: [Order!]!
+}
+
+"""This represents a product image"""
+type images {
+  url: String
+}
+
+"""This represents a user"""
+type User {
+  _id: String
+  name: String
+  email: String
+  points: Int
+  orders: [Order!]!
+}
+
+"""This represents a log"""
+type logs {
+  message: String
+  level: String
+  timestamp: String
+}
+
+"""This represents a jwt token"""
+type jwttoken {
+  token: String!
 }

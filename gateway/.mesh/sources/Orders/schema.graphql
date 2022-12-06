@@ -23,6 +23,7 @@ type Order {
   status: String
   _id: String
   type: String
+  orderid: String
 }
 
 """This represents a product saved in order"""
@@ -35,11 +36,11 @@ type productOrder {
 """All mutations"""
 type Mutation {
   """create order"""
-  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!): Order
+  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!, orderid: String): Order
   """update order status"""
   updateOrderStatus(_id: String!, status: String!): Order
   """Start order with camunda"""
-  startOrder(userid: String, order: OrderInput, ptype: String): returnMessage
+  startOrder(userid: String, order: OrderInput, ptype: String, orderid: String): returnMessage
 }
 
 """This represents a product input"""
@@ -58,4 +59,5 @@ type returnMessage {
 input OrderInput {
   userid: String
   products: [productOrderInput]
+  orderid: String
 }

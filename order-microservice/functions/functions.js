@@ -24,6 +24,7 @@ export const createOrder = async (data) => {
   );
 
   let newOrder = {};
+  newOrder["orderid"] = data.orderid;
   newOrder["userid"] = data.userid;
   newOrder["total"] = amount;
   newOrder.products = Array.from(data.products);
