@@ -2,7 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import Mongoose from "mongoose";
-import load_orders from "./load_orders.js";
+import { load_orders, validate_orders } from "./load_orders.js";
 import { graphqlHTTP } from "express-graphql";
 import schema from "./schema/schema.js";
 import { subscriptions } from "./functions/subcriptions.js";

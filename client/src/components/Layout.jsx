@@ -47,25 +47,25 @@ export default function ClippedDrawer({ children, d, window }) {
             icon: <Face6OutlinedIcon />,
             name: "Profile",
             permission: ["admin", "user"],
-            link: "/profile",
+            link: "profile",
           },
           {
             icon: <PendingActionsOutlinedIcon />,
             name: "Pending order",
             permission: ["admin"],
-            link: "/pending-order",
+            link: "pending-order",
           },
           {
             icon: <SearchOutlinedIcon />,
             name: "Search for user",
             permission: ["admin"],
-            link: "/search-user",
+            link: "search-user",
           },
           {
             icon: <HistoryEduOutlinedIcon />,
             name: "Logs",
             permission: ["admin"],
-            link: "/logs",
+            link: "logs",
           },
         ].map(
           (item, index) =>
@@ -75,7 +75,7 @@ export default function ClippedDrawer({ children, d, window }) {
               <ListItem
                 button
                 key={item.name}
-                onClick={() => navigate(`/${item.name.toLowerCase()}`)}
+                onClick={() => navigate(`/${item.link}`)}
               >
                 <ListItemIcon>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.name} />

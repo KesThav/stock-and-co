@@ -37,7 +37,7 @@ Transport.prototype.normalizeQuery = function (options) {
   }
 
   // now - 24
-  options.from = options.from || options.until - 24 * 60 * 60 * 1000;
+  options.from = options.from || 0;
   if (typeof options.from !== "object") {
     options.from = new Date(options.from);
   }

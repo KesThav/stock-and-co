@@ -2,6 +2,11 @@ import axios from "axios";
 import mongoose from "mongoose";
 import { createOrder } from "./functions/functions.js";
 import { v4 as uuidv4 } from "uuid";
+import { startInstance } from "./functions/camunda.js";
+
+async function sleep(milli_seconds = 1000) {
+  return new Promise((done) => setTimeout(() => done(), milli_seconds));
+}
 
 const getProducts = async () => {
   let products = [];
@@ -70,7 +75,7 @@ const getUsers = async () => {
   }
 };
 
-const load_orders = async () => {
+export const load_orders = async () => {
   console.log("Loading products and users...");
   const productData = await getProducts();
   const userData = await getUsers();
@@ -109,13 +114,43 @@ const load_orders = async () => {
           type: "Card",
         };
 
-        await createOrder(myorder);
+        const data_camunda = {
+          userid: userData[i]._id,
+          orderid: myorder.orderid,
+          ptype: "Card",
+          order: myorder,
+        };
+
+        //await createOrder(myorder);
+        await startInstance(data_camunda);
+        await sleep(1000);
       }
     }
     console.log("Orders loaded !");
+    validate_orders();
   } catch (err) {
     console.log(err);
   }
 };
 
-export default load_orders;
+export const validate_orders = async () => {
+  console.log("Validating orders...");
+  const res = await axios.get("http://localhost:8080/engine-rest/task");
+
+  console.log("Tasks retrieved !");
+  const taskid = [];
+  if (res) {
+    console.log("Validating orders...");
+    res.data.forEach((element) => {
+      taskid.push(element.id);
+    });
+    for (let task of taskid) {
+      await axios.post(
+        `http://localhost:8080/engine-rest/task/${task}/complete`,
+        {}
+      );
+      await sleep(1000);
+    }
+    console.log("Orders validated !");
+  }
+};

@@ -14,9 +14,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ContextAPI } from "../utils/ContextAPI";
+import MyStepper from "./Stepper";
+import { useEffect } from "react";
 
 const Orderlist = ({ order }) => {
-  const { convertMoney } = useContext(ContextAPI);
+  const { convertMoney, logs, getLogs } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
@@ -33,6 +35,11 @@ const Orderlist = ({ order }) => {
       duration: theme.transitions.duration.shortest,
     }),
   }));
+
+  useEffect(() => {
+    getLogs();
+  }, []);
+
   return (
     <Fragment>
       <Card
@@ -75,6 +82,7 @@ const Orderlist = ({ order }) => {
             </Box>
           </CardContent>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <MyStepper order={order} logs={logs} />
             <Divider />
             {order.products.map((prod) => (
               <>

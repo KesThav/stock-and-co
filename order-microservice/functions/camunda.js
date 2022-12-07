@@ -1,5 +1,6 @@
 import axios from "axios";
 import logs from "../functions/logger.js";
+import Order from "../model/order.model.js";
 
 //all the functions to start camunda with axios
 const escapeJSON = (obj) => {
@@ -58,4 +59,28 @@ export const startInstance = async (data) => {
     logs.log("error", `Error when starting order instance : ${err}`);
   }
   return "Process started !";
+};
+
+const mapTask = async (task) => {
+  const taskid = await Promise.all(
+    task.map(async (task) => {
+      const { id } = task;
+      const res = await axios.get(
+        `http://localhost:8080/engine-rest/task/${id}/variables`
+      );
+      return { taskid: id, orderid: res.data.orderid.value };
+    })
+  );
+  return taskid;
+};
+
+export const getUserTasksAndRelatedOrder = async () => {
+  const response = await axios.get("http://localhost:8080/engine-rest/task");
+  const result = await mapTask(response.data);
+  /*for (let i = 0; i < result.length; i++) {
+    const { orderid } = result[i];
+    const order = await Order.findOne({ orderid: orderid });
+    result[i].order = order;
+  }*/
+  return result;
 };

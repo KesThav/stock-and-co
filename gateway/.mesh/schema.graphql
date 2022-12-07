@@ -5,6 +5,10 @@ schema {
 
 """All queries"""
 type Query {
+  """A single product"""
+  product(id: String): Product
+  """List all products"""
+  products: [Product]
   """List all orders"""
   orders: [Order]
   """A single order"""
@@ -13,10 +17,6 @@ type Query {
   orderByUser(userid: String): [Order]
   """Get orders by product"""
   orderByProduct(productid: String): [Order]
-  """A single product"""
-  product(id: String): Product
-  """List all products"""
-  products: [Product]
   """A single user"""
   user(_id: String): User
   """List all users"""
@@ -27,22 +27,40 @@ type Query {
 
 """All mutations"""
 type Mutation {
-  """create order"""
-  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!, orderid: String): Order
-  """update order status"""
-  updateOrderStatus(_id: String!, status: String!): Order
-  """Start order with camunda"""
-  startOrder(userid: String, order: OrderInput, ptype: String, orderid: String): returnMessage
   """add product"""
   addProduct(name: String!, description: String!, type: String!, averageRating: Int, quantity: Int!, price: Float!, images: [String]): Product
   """update product"""
   updateProduct(_id: String!, name: String, description: String, type: String, averageRating: Int, quantity: Int, price: Float, images: [String]): Product
   """delete product"""
   deleteProduct(_id: String!): Product
+  """create order"""
+  createOrder(userid: String!, products: [productOrderInput!], total: Int!, status: String!, orderid: String): Order
+  """update order status"""
+  updateOrderStatus(_id: String!, status: String!): Order
+  """Start order with camunda"""
+  startOrder(userid: String, order: OrderInput, ptype: String, orderid: String): returnMessage
   """register user"""
   register(name: String!, email: String!, password: String!): jwttoken
   """login user"""
   login(email: String!, password: String!): jwttoken
+}
+
+"""This represents a product"""
+type Product {
+  _id: String
+  name: String!
+  description: String!
+  type: String!
+  averageRating: Float
+  quantity: Int!
+  price: Float!
+  images: [images]
+  orderList: [Order!]!
+}
+
+"""This represents a product image"""
+type images {
+  url: String
 }
 
 """This represents an order"""
@@ -82,24 +100,6 @@ input OrderInput {
   userid: String
   products: [productOrderInput]
   orderid: String
-}
-
-"""This represents a product"""
-type Product {
-  _id: String
-  name: String!
-  description: String!
-  type: String!
-  averageRating: Float
-  quantity: Int!
-  price: Float!
-  images: [images]
-  orderList: [Order!]!
-}
-
-"""This represents a product image"""
-type images {
-  url: String
 }
 
 """This represents a user"""

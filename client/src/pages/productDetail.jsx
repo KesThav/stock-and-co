@@ -109,6 +109,7 @@ const ProductDetail = () => {
     localStorage.setItem("basket", JSON.stringify(arr));
     setBasket(basket);
     setCount((count) => count + 1);
+    window.location.reload();
   };
 
   return (

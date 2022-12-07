@@ -94,6 +94,7 @@ export const mapLogs = (results) => {
 export const getLogs = async () => {
   const mappedLogs = await new Promise((success, failure) => {
     const options = {
+      limit: 100000000,
       order: "desc",
       fields: ["level", "message", "timestamp"],
     };

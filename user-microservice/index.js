@@ -18,6 +18,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 import logs from "./functions/logger.js";
 import { mapLogs } from "./functions/functions.js";
+import { getUserTasksAndRelatedOrder } from "../order-microservice/functions/camunda.js";
 
 export const app = express();
 
@@ -62,6 +63,11 @@ const config = {
 const client = new Client(config);
 
 subscriptions(client);
+
+app.get("/userrelated", async (req, res) => {
+  const rep = await getUserTasksAndRelatedOrder();
+  res.send(rep);
+});
 
 const load_users = async () => {
   console.log("Loading users...");

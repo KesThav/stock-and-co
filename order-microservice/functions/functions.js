@@ -7,7 +7,8 @@ export const getAllOrders = async () => {
 };
 
 export const getOrder = async (_id) => {
-  const oneOrder = await Order.findById({ _id: _id });
+  console.log(_id);
+  const oneOrder = await Order.findOne({ orderid: _id });
 
   if (!oneOrder) throw new Error("Order not found !");
 

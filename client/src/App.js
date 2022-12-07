@@ -13,6 +13,7 @@ import Layout from "./components/Layout";
 import axios from "axios";
 import Shopping from "./pages/shopping";
 import Logs from "./pages/logs";
+import moment from "moment";
 
 var userData;
 const token = localStorage.getItem("token");
@@ -90,6 +91,58 @@ function App() {
   };
 
   const [count, setCount] = useState(0);
+  const [logs, setLogs] = useState([]);
+
+  const getLogs = async () => {
+    const logsQuery = {
+      query: `query {
+        queryLogs {
+          message
+          level
+          timestamp
+        }
+      }`,
+      variables: {},
+    };
+
+    const headers = {
+      "content-type": "application/json",
+    };
+
+    axios({
+      baseURL: process.env.REACT_APP_base_url,
+      method: "post",
+      headers: headers,
+      data: logsQuery,
+    })
+      .then((response) => {
+        if (response.data.errors) {
+          throw new Error(response.data.errors[0].message);
+        } else {
+          return response;
+        }
+      })
+      .then((response) => {
+        let tmp = [];
+        response.data.data.queryLogs.forEach((log) => {
+          let message = log.message.split(" | ");
+          tmp.push({
+            message: log.message,
+            level: log.level,
+            timestamp: moment(new Date(+log.timestamp)).format(
+              "YYYY-MM-DD HH:mm:ss"
+            ),
+            events_id: message[0],
+            event_order: message[1],
+            event_step: message[2],
+            event_message: message[3],
+          });
+        });
+        setLogs(tmp);
+        console.log(tmp);
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <Fragment>
@@ -104,6 +157,8 @@ function App() {
           convertMoney,
           setCount,
           count,
+          logs,
+          getLogs,
         }}
       >
         <ThemeProvider theme={theme}>
