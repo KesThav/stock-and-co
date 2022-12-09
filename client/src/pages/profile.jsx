@@ -1,6 +1,6 @@
 import React, { useContext, Fragment, useState } from "react";
 import { ContextAPI } from "../utils/ContextAPI";
-import { Avatar, Typography, Card, Box } from "@mui/material";
+import { Avatar, Typography, Card, Box, Pagination } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import Orderlist from "../components/orderlist";
@@ -9,6 +9,9 @@ const Profile = () => {
   const { userData, user, getUser } = useContext(ContextAPI);
 
   const [orders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+  const [lowbound, setLowbound] = useState(0);
+  const [upbound, setUpbound] = useState(4);
 
   const getOrders = (userid) => {
     const ordersQuery = {
@@ -27,8 +30,9 @@ const Profile = () => {
           }
           status
           orderid
-          
+          type
           total
+          createdAt
         }
       }`,
       variables: { userid: userid },
@@ -56,6 +60,21 @@ const Profile = () => {
         setOrders(orders);
       })
       .catch((error) => console.log(error));
+  };
+
+  const pageNumber = () => {
+    return orders &&
+      orders.length !== 0 &&
+      orders.length / 4 > Math.round(orders.length / 4)
+      ? Math.round(orders.length / 4 + 1)
+      : Math.round(orders.length / 4);
+  };
+
+  //function to change page and update shown data
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    setLowbound(value * 4 - 4);
+    setUpbound(value * 4);
   };
 
   useEffect(() => {
@@ -102,9 +121,21 @@ const Profile = () => {
         <strong>Orders</strong>
       </Typography>
       {orders &&
-        orders.map((order, idx) => (
-          <Orderlist key={order.orderid} order={order} />
-        ))}
+        orders
+          .slice(lowbound, upbound)
+          .map((order, idx) => (
+            <Orderlist key={order.orderid} order={order} type={"profile"} />
+          ))}
+      <Pagination
+        sx={{
+          marginTop: "20px",
+          display: "flex",
+          flexDirection: "row-reverse",
+        }}
+        count={orders && pageNumber()}
+        page={page}
+        onChange={handlePageChange}
+      />
     </Fragment>
   );
 };

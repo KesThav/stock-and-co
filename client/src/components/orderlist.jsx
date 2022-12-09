@@ -7,6 +7,7 @@ import {
   Box,
   Divider,
   Chip,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -16,8 +17,10 @@ import { useContext } from "react";
 import { ContextAPI } from "../utils/ContextAPI";
 import MyStepper from "./Stepper";
 import { useEffect } from "react";
+import moment from "moment";
+import axios from "axios";
 
-const Orderlist = ({ order }) => {
+const Orderlist = ({ order, type, taskid }) => {
   const { convertMoney, logs, getLogs } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
@@ -40,6 +43,39 @@ const Orderlist = ({ order }) => {
     getLogs();
   }, []);
 
+  const confirmShipment = async (taskid) => {
+    const confirmShipmentMutation = {
+      query: `mutation confirmShipment($taskid: String) {
+        completeTask(taskid: $taskid) {
+          message
+        }
+      }`,
+      variables: {
+        taskid,
+      },
+    };
+
+    const headers = {
+      "content-type": "application/json",
+    };
+
+    axios({
+      url: process.env.REACT_APP_base_url,
+      method: "post",
+      headers: headers,
+      data: confirmShipmentMutation,
+    })
+      .then((response) => {
+        if (response.data.errors) {
+          throw new Error(response.data.errors[0].message);
+        } else {
+          return response;
+        }
+      })
+      .catch((err) => console.log(err));
+    window.location.reload();
+  };
+
   return (
     <Fragment>
       <Card
@@ -61,16 +97,31 @@ const Orderlist = ({ order }) => {
             }}
           >
             <Box>
-              <Typography>Commande {order.orderid}</Typography>
+              <Typography>
+                Commande {order.orderid} /{" "}
+                {moment(+order.createdAt).format("DD-MM-YYYY HH:MM")}
+              </Typography>
               <Typography>CHF {convertMoney(order.total)}</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Chip
-                label={order.status}
-                sx={{
-                  bgcolor: order.status === "Paid" ? "#B8E8FC" : "#C8FFD4",
-                }}
-              />
+              {type === "profile" && (
+                <Chip
+                  label={order.status}
+                  sx={{
+                    bgcolor: order.status === "Paid" ? "#B8E8FC" : "#C8FFD4",
+                  }}
+                />
+              )}
+              {type === "pending" && (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{ mr: 2 }}
+                  onClick={() => confirmShipment(taskid)}
+                >
+                  Confirm the shipment
+                </Button>
+              )}
               <ExpandMore
                 expand={expanded}
                 onClick={handleExpandClick}
@@ -82,11 +133,12 @@ const Orderlist = ({ order }) => {
             </Box>
           </CardContent>
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <MyStepper order={order} logs={logs} />
+            {type === "profile" && <MyStepper order={order} logs={logs} />}
             <Divider />
-            {order.products.map((prod) => (
+            {order.products.map((prod, idx) => (
               <>
                 <Card
+                  key={idx}
                   sx={{
                     mt: 2,
                     mb: 2,

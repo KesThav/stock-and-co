@@ -74,13 +74,25 @@ const mapTask = async (task) => {
   return taskid;
 };
 
-export const getUserTasksAndRelatedOrder = async () => {
+export const getUserTasksAndRelatedOrders = async () => {
   const response = await axios.get("http://localhost:8080/engine-rest/task");
   const result = await mapTask(response.data);
-  /*for (let i = 0; i < result.length; i++) {
+  for (let i = 0; i < result.length; i++) {
     const { orderid } = result[i];
     const order = await Order.findOne({ orderid: orderid });
     result[i].order = order;
-  }*/
+  }
   return result;
+};
+
+export const completeTask = async (taskid) => {
+  try {
+    const response = await axios.post(
+      `http://localhost:8080/engine-rest/task/${taskid}/complete`,
+      {}
+    );
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
 };

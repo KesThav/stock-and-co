@@ -14,6 +14,7 @@ import axios from "axios";
 import Shopping from "./pages/shopping";
 import Logs from "./pages/logs";
 import moment from "moment";
+import PendingOrders from "./pages/pendingorders";
 
 var userData;
 const token = localStorage.getItem("token");
@@ -39,7 +40,7 @@ const theme = createTheme({
       main: "#116A57",
     },
   },
-  shadows: "none",
+  shadows: Array(25).fill("none"),
 });
 
 function App() {
@@ -139,7 +140,6 @@ function App() {
           });
         });
         setLogs(tmp);
-        console.log(tmp);
       })
       .catch((error) => console.log(error));
   };
@@ -202,6 +202,14 @@ function App() {
                 element={
                   <Layout d={false}>
                     <Shopping />
+                  </Layout>
+                }
+              />
+              <Route
+                path="/pending-orders"
+                element={
+                  <Layout d={true}>
+                    <PendingOrders />
                   </Layout>
                 }
               />

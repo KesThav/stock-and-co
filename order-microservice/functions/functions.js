@@ -1,7 +1,9 @@
 import Order from "../model/order.model.js";
 
 export const getAllOrders = async () => {
-  const allOrders = await Order.find({});
+  const allOrders = await Order.find({}).sort({
+    createdAt: -1,
+  });
 
   return allOrders;
 };
@@ -50,7 +52,9 @@ export const updateOrderStatus = async (_id, status) => {
 };
 
 export const getUserOrders = async (userid) => {
-  const userOrders = await Order.find({ userid: userid });
+  const userOrders = await Order.find({ userid: userid }).sort({
+    createdAt: -1,
+  });
 
   return userOrders;
 };

@@ -11,7 +11,6 @@ const MyStepper = ({ order, logs }) => {
   );
   if (mylogs) {
     const allSteps = mylogs.map((log) => log.event_step);
-    console.log(allSteps);
     number = allSteps.includes("Step 5")
       ? 4
       : allSteps.includes("Step 4")
@@ -35,8 +34,6 @@ const MyStepper = ({ order, logs }) => {
             : "Update points",
           "Order delivered",
         ];
-
-  console.log(number);
   return (
     <Box sx={{ width: "100%", mt: 2, mb: 4 }}>
       <Stepper activeStep={number} alternativeLabel>

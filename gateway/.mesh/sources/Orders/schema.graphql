@@ -13,6 +13,8 @@ type Query {
   orderByUser(userid: String): [Order]
   """Get orders by product"""
   orderByProduct(productid: String): [Order]
+  """Get user tasks and related orders"""
+  userTasksAndRelatedOrders: [camundaTaskWithOrder]
 }
 
 """This represents an order"""
@@ -24,6 +26,7 @@ type Order {
   _id: String
   type: String
   orderid: String
+  createdAt: String
 }
 
 """This represents a product saved in order"""
@@ -31,6 +34,13 @@ type productOrder {
   productid: String
   price: Float
   quantity: Int
+}
+
+"""this represents a camunda task with order"""
+type camundaTaskWithOrder {
+  taskid: String
+  orderid: String
+  order: Order
 }
 
 """All mutations"""
@@ -41,6 +51,8 @@ type Mutation {
   updateOrderStatus(_id: String!, status: String!): Order
   """Start order with camunda"""
   startOrder(userid: String, order: OrderInput, ptype: String, orderid: String): returnMessage
+  """Complete task with camunda"""
+  completeTask(taskid: String): returnMessage
 }
 
 """This represents a product input"""

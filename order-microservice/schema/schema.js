@@ -8,7 +8,11 @@ import {
   GraphQLInputObjectType,
   GraphQLFloat,
 } from "graphql";
-import { startInstance } from "../functions/camunda.js";
+import {
+  startInstance,
+  getUserTasksAndRelatedOrders,
+  completeTask,
+} from "../functions/camunda.js";
 import {
   getAllOrders,
   getOrder,
@@ -49,6 +53,7 @@ const orderType = new GraphQLObjectType({
     _id: { type: GraphQLString },
     type: { type: GraphQLString },
     orderid: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
   }),
 });
 
@@ -67,6 +72,16 @@ const returnMessage = new GraphQLObjectType({
   description: "this represents a return message",
   fields: () => ({
     message: { type: GraphQLString },
+  }),
+});
+
+const camundaTaskWithOrder = new GraphQLObjectType({
+  name: "camundaTaskWithOrder",
+  description: "this represents a camunda task with order",
+  fields: () => ({
+    taskid: { type: GraphQLString },
+    orderid: { type: GraphQLString },
+    order: { type: orderType },
   }),
 });
 
@@ -102,6 +117,11 @@ const Query = new GraphQLObjectType({
         productid: { type: GraphQLString },
       },
       resolve: (parent, args) => getProductOrders(args.productid),
+    },
+    userTasksAndRelatedOrders: {
+      type: new GraphQLList(camundaTaskWithOrder),
+      description: "Get user tasks and related orders",
+      resolve: () => getUserTasksAndRelatedOrders(),
     },
   }),
 });
@@ -143,6 +163,14 @@ const Mutation = new GraphQLObjectType({
         orderid: { type: GraphQLString },
       },
       resolve: (parent, args) => startInstance(args),
+    },
+    completeTask: {
+      type: returnMessage,
+      description: "Complete task with camunda",
+      args: {
+        taskid: { type: GraphQLString },
+      },
+      resolve: (parent, args) => completeTask(args.taskid),
     },
   }),
 });

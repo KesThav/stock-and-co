@@ -241,7 +241,7 @@ const ProductDetail = () => {
                                 sx={{ fontSize: 40 }}
                               />
                             ),
-                            text: "Free, no-contact delivery",
+                            text: "Free delivery",
                           },
                         ].map((item, i) => (
                           <div

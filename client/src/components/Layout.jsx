@@ -51,9 +51,9 @@ export default function ClippedDrawer({ children, d, window }) {
           },
           {
             icon: <PendingActionsOutlinedIcon />,
-            name: "Pending order",
+            name: "Pending orders",
             permission: ["admin"],
-            link: "pending-order",
+            link: "pending-orders",
           },
           {
             icon: <SearchOutlinedIcon />,

@@ -31,6 +31,7 @@ const ProductCard = ({ product }) => {
           minHeight: "450px",
           boxShadow: "none",
           border: "1px solid #ebebeb",
+          pt: 3,
           borderRadius: 0,
           bgcolor: hoverId === product._id ? "#ebebeb" : "white",
           cursor: hoverId === product._id && "pointer",
@@ -42,7 +43,7 @@ const ProductCard = ({ product }) => {
         <CardMedia
           sx={{ objectFit: "contain" }}
           component="img"
-          alt="green iguana"
+          alt="some product"
           height="300"
           image={product.images[0].url}
         />

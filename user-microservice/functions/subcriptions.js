@@ -46,7 +46,6 @@ export const subscriptions = (client) => {
 
   //update balance
   client.subscribe("with_card", async function ({ task, taskService }) {
-    console.log(task.variables.getAll());
     try {
       let order = task.variables.get("order");
       const orderid = task.variables.get("orderid");

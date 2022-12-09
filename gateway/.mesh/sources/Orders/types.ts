@@ -28,6 +28,8 @@ export type Query = {
   orderByUser?: Maybe<Array<Maybe<Order>>>;
   /** Get orders by product */
   orderByProduct?: Maybe<Array<Maybe<Order>>>;
+  /** Get user tasks and related orders */
+  userTasksAndRelatedOrders?: Maybe<Array<Maybe<camundaTaskWithOrder>>>;
 };
 
 
@@ -57,6 +59,7 @@ export type Order = {
   _id?: Maybe<Scalars['String']>;
   type?: Maybe<Scalars['String']>;
   orderid?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
 };
 
 /** This represents a product saved in order */
@@ -64,6 +67,13 @@ export type productOrder = {
   productid?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
   quantity?: Maybe<Scalars['Int']>;
+};
+
+/** this represents a camunda task with order */
+export type camundaTaskWithOrder = {
+  taskid?: Maybe<Scalars['String']>;
+  orderid?: Maybe<Scalars['String']>;
+  order?: Maybe<Order>;
 };
 
 /** All mutations */
@@ -74,6 +84,8 @@ export type Mutation = {
   updateOrderStatus?: Maybe<Order>;
   /** Start order with camunda */
   startOrder?: Maybe<returnMessage>;
+  /** Complete task with camunda */
+  completeTask?: Maybe<returnMessage>;
 };
 
 
@@ -100,6 +112,12 @@ export type MutationstartOrderArgs = {
   order?: InputMaybe<OrderInput>;
   ptype?: InputMaybe<Scalars['String']>;
   orderid?: InputMaybe<Scalars['String']>;
+};
+
+
+/** All mutations */
+export type MutationcompleteTaskArgs = {
+  taskid?: InputMaybe<Scalars['String']>;
 };
 
 /** This represents a product input */
@@ -129,7 +147,9 @@ export type OrderInput = {
   /** Get orders by user **/
   orderByUser: InContextSdkMethod<Query['orderByUser'], QueryorderByUserArgs, MeshContext>,
   /** Get orders by product **/
-  orderByProduct: InContextSdkMethod<Query['orderByProduct'], QueryorderByProductArgs, MeshContext>
+  orderByProduct: InContextSdkMethod<Query['orderByProduct'], QueryorderByProductArgs, MeshContext>,
+  /** Get user tasks and related orders **/
+  userTasksAndRelatedOrders: InContextSdkMethod<Query['userTasksAndRelatedOrders'], {}, MeshContext>
   };
 
   export type MutationSdk = {
@@ -138,7 +158,9 @@ export type OrderInput = {
   /** update order status **/
   updateOrderStatus: InContextSdkMethod<Mutation['updateOrderStatus'], MutationupdateOrderStatusArgs, MeshContext>,
   /** Start order with camunda **/
-  startOrder: InContextSdkMethod<Mutation['startOrder'], MutationstartOrderArgs, MeshContext>
+  startOrder: InContextSdkMethod<Mutation['startOrder'], MutationstartOrderArgs, MeshContext>,
+  /** Complete task with camunda **/
+  completeTask: InContextSdkMethod<Mutation['completeTask'], MutationcompleteTaskArgs, MeshContext>
   };
 
   export type SubscriptionSdk = {

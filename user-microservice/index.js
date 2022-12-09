@@ -17,8 +17,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 import logs from "./functions/logger.js";
-import { mapLogs } from "./functions/functions.js";
-import { getUserTasksAndRelatedOrder } from "../order-microservice/functions/camunda.js";
 
 export const app = express();
 
