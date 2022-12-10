@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 //camund config
 const config = {
-  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  baseUrl: "http://camunda:8080/engine-rest",
   use: logger,
   asyncResponseTimeout: 10000,
 };
@@ -53,12 +53,12 @@ const read_file = async (files) => {
 const delete_bpmn_model = async () => {
   console.log("Getting all deployments...");
   try {
-    const dep = await axios.get("http://localhost:8080/engine-rest/deployment");
+    const dep = await axios.get("http://camunda:8080/engine-rest/deployment");
     if (dep) {
       console.log("Deleting all current deployments...");
       for (let i = 0; i < dep.data.length; i++) {
         await axios.delete(
-          `http://localhost:8080/engine-rest/deployment/${dep.data[i].id}?cascade=true`
+          `http://camunda:8080/engine-rest/deployment/${dep.data[i].id}?cascade=true`
         );
       }
       console.log("All deployments deleted !");
@@ -75,7 +75,7 @@ const deploy_bpmn_model = async (path_) => {
   console.log("Loading models...");
   try {
     await axios.post(
-      "http://localhost:8080/engine-rest/deployment/create",
+      "http://camunda:8080/engine-rest/deployment/create",
       form_data,
       {
         headers: {

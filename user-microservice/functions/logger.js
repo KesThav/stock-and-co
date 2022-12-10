@@ -6,7 +6,7 @@ const logs = createLogger({
   transports: [
     new transports.MongoDB({
       level: "info",
-      db: "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-logs",
+      db: "mongodb://root:password@mongo-logs-microservice:9006/users?authSource=admin",
       options: {
         useUnifiedTopology: true,
       },
@@ -19,7 +19,7 @@ const logs = createLogger({
     ,
     new transports.MongoDB({
       level: "error",
-      db: "mongodb+srv://kesigan:kesi1996@cluster0.hycty.gcp.mongodb.net/stock-and-co-logs",
+      db: "mongodb://root:password@mongo-logs-microservice:9006/users?authSource=admin",
       options: {
         useUnifiedTopology: true,
       },

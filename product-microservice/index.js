@@ -24,8 +24,8 @@ const corsOptions = {
 };
 
 const db_url =
-  //"mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
-  process.env.product_db_url;
+  "mongodb://root:password@mongo-product-microservice:9004/products?authSource=admin";
+//process.env.product_db_url;
 
 Mongoose.connect(
   db_url,
@@ -65,7 +65,7 @@ app.use(
 );
 
 const config = {
-  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  baseUrl: "http://camunda:8080/engine-rest",
   use: logger,
   asyncResponseTimeout: 10000,
 };
@@ -78,5 +78,5 @@ const port = process.env.PRODUCT_PORT;
 
 app.listen(port, async () => {
   console.log(`Product-microservice listening at http://localhost:${port}`);
-  //await load_database();
+  await load_database();
 });

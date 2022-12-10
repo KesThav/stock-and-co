@@ -23,8 +23,8 @@ const corsOptions = {
 };
 
 const db_url =
-  //"mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
-  process.env.order_db_url;
+  "mongodb://root:password@mongo-order-microservice:9002/orders?authSource=admin";
+//process.env.order_db_url;
 
 Mongoose.connect(
   db_url,
@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 
 //camund config
 const config = {
-  baseUrl: "http://127.0.0.1:8080/engine-rest",
+  baseUrl: "http://camunda:8080/engine-rest",
   use: logger,
   asyncResponseTimeout: 10000,
 };
@@ -66,5 +66,5 @@ const port = process.env.ORDER_PORT;
 
 app.listen(port, async () => {
   console.log(`Order-microservice listening at http://localhost:${port}`);
-  //load_orders();
+  load_orders();
 });

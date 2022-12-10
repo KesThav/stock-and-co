@@ -6,5 +6,5 @@ RUN apk add --no-cache bash
 RUN npm install .
 
 RUN npm install .
-CMD ["npm","run","start"]
+CMD ["npm","run","mesh_dev"]
 ENTRYPOINT ["./start.sh"]

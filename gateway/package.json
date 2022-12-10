@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"node index.js\"  \"node ../product-microservice/index.js\" \"node ../user-microservice/index.js\" \"node ../order-microservice/index.js\"",
     "start": "node index.js",
-    "startall": "npm run dev && mesh dev",
+    "startall": "npm run dev",
     "mesh_dev": "mesh dev"
   },
   "keywords": [],

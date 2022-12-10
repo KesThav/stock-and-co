@@ -22,7 +22,7 @@ const getProducts = async () => {
 
   const productConfig = {
     method: "post",
-    url: "http://localhost:8084/graphql",
+    url: "http://product-microservice:8084/graphql",
     headers: {
       "Content-Type": "application/json",
     },
@@ -55,7 +55,7 @@ const getUsers = async () => {
 
   const userConfig = {
     method: "post",
-    url: "http://localhost:8082/graphql",
+    url: "http://user-microservice:8082/graphql",
     headers: {
       "Content-Type": "application/json",
     },
@@ -135,7 +135,7 @@ export const load_orders = async () => {
 
 export const validate_orders = async () => {
   console.log("Validating orders...");
-  const res = await axios.get("http://localhost:8080/engine-rest/task");
+  const res = await axios.get("http://camunda:8080/engine-rest/task");
 
   console.log("Tasks retrieved !");
   const taskid = [];
@@ -146,7 +146,7 @@ export const validate_orders = async () => {
     });
     for (let task of taskid) {
       await axios.post(
-        `http://localhost:8080/engine-rest/task/${task}/complete`,
+        `http://camunda:8080/engine-rest/task/${task}/complete`,
         {}
       );
       await sleep(1000);

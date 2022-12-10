@@ -1,0 +1,64 @@
+sources:
+  - name: Users
+    handler:
+      graphql:
+        endpoint: http://user-microservice:8082/graphql
+  - name: Products
+    handler:
+      graphql:
+        endpoint: http://product-microservice:8084/graphql
+  - name: Orders
+    handler:
+      graphql:
+        endpoint: http://order-microservice:8083/graphql
+
+serve:
+  hostname: 0.0.0.0
+
+additionalTypeDefs: |
+  extend type User {
+    orders: [Order!]!
+  }
+  extend type productOrder {
+    productDetails: Product!
+  }
+  extend type Order {
+    userDetails: User!
+  }
+  extend type Product {
+    orderList: [Order!]!
+  }
+
+additionalResolvers:
+  - targetTypeName: User
+    targetFieldName: orders
+    sourceName: "Orders"
+    sourceTypeName: "Query"
+    sourceFieldName: "orderByUser"
+    requiredSelectionSet: "{_id}"
+    sourceArgs:
+      userid: "{root._id}"
+  - targetTypeName: productOrder
+    targetFieldName: productDetails
+    sourceName: "Products"
+    sourceTypeName: "Query"
+    sourceFieldName: "product"
+    requiredSelectionSet: "{productid}"
+    sourceArgs:
+      id: "{root.productid}"
+  - targetTypeName: Order
+    targetFieldName: userDetails
+    sourceName: "Users"
+    sourceTypeName: "Query"
+    sourceFieldName: "user"
+    requiredSelectionSet: "{userid}"
+    sourceArgs:
+      _id: "{root.userid}"
+  - targetTypeName: Product
+    targetFieldName: orderList
+    sourceName: "Orders"
+    sourceTypeName: "Query"
+    sourceFieldName: "orderByProduct"
+    requiredSelectionSet: "{_id}"
+    sourceArgs:
+      productid: "{root._id}"

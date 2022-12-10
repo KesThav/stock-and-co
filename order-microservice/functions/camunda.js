@@ -50,7 +50,7 @@ export const startInstance = async (data) => {
     };
 
     const res = await axios.post(
-      "http://localhost:8080/engine-rest/process-definition/key/order-process/start",
+      "http://camunda:8080/engine-rest/process-definition/key/order-process/start",
       variables,
       headers
     );
@@ -66,7 +66,7 @@ const mapTask = async (task) => {
     task.map(async (task) => {
       const { id } = task;
       const res = await axios.get(
-        `http://localhost:8080/engine-rest/task/${id}/variables`
+        `http://camunda:8080/engine-rest/task/${id}/variables`
       );
       return { taskid: id, orderid: res.data.orderid.value };
     })
@@ -75,7 +75,7 @@ const mapTask = async (task) => {
 };
 
 export const getUserTasksAndRelatedOrders = async () => {
-  const response = await axios.get("http://localhost:8080/engine-rest/task");
+  const response = await axios.get("http://camunda:8080/engine-rest/task");
   const result = await mapTask(response.data);
   for (let i = 0; i < result.length; i++) {
     const { orderid } = result[i];
@@ -88,7 +88,7 @@ export const getUserTasksAndRelatedOrders = async () => {
 export const completeTask = async (taskid) => {
   try {
     const response = await axios.post(
-      `http://localhost:8080/engine-rest/task/${taskid}/complete`,
+      `http://camunda:8080/engine-rest/task/${taskid}/complete`,
       {}
     );
     return response.data;
