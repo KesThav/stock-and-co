@@ -105,14 +105,16 @@ const Logs = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {logs.slice(lowbound, upbound).map((log) => (
-              <TableRow key={log.message}>
-                <TableCell>{log.timestamp}</TableCell>
-                <TableCell>{log.event_order}</TableCell>
-                <TableCell>{formatStep(log.event_step)}</TableCell>
-                <TableCell>{log.event_message}</TableCell>
-              </TableRow>
-            ))}
+            {logs.slice(lowbound, upbound).map((log) =>
+              log.event_step?.includes("Step") ? (
+                <TableRow key={log.message}>
+                  <TableCell>{log.timestamp}</TableCell>
+                  <TableCell>{log.event_order}</TableCell>
+                  <TableCell>{formatStep(log.event_step)}</TableCell>
+                  <TableCell>{log.event_message}</TableCell>
+                </TableRow>
+              ) : null
+            )}
           </TableBody>
         </Table>
       </TableContainer>

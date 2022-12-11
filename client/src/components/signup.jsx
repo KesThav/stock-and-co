@@ -84,6 +84,7 @@ const Signup = ({ setPosition }) => {
       .then((response) => {
         localStorage.setItem("token", response.data.data.register.token);
         navigate("/");
+        window.location.reload();
       })
       .catch((err) => console.log(err));
   };
@@ -175,7 +176,11 @@ const Signup = ({ setPosition }) => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Typography variant="body2" onClick={() => setPosition(0)}>
+              <Typography
+                variant="body2"
+                onClick={() => setPosition(0)}
+                sx={{ cursor: "pointer" }}
+              >
                 Already have an account? Sign in
               </Typography>
             </Grid>

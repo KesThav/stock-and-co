@@ -8,6 +8,7 @@ import {
   Divider,
   Chip,
   Button,
+  CardMedia,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -19,6 +20,7 @@ import MyStepper from "./Stepper";
 import { useEffect } from "react";
 import moment from "moment";
 import axios from "axios";
+import ShoppingCard from "./shoppingCard";
 
 const Orderlist = ({ order, type, taskid }) => {
   const { convertMoney, logs, getLogs } = useContext(ContextAPI);
@@ -85,7 +87,7 @@ const Orderlist = ({ order, type, taskid }) => {
           justifyContent: "space-between",
           padding: "10px",
           boxShadow: "none",
-          border: "1px solid #78909c",
+          border: "1px solid #0C6A57",
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
@@ -98,7 +100,10 @@ const Orderlist = ({ order, type, taskid }) => {
           >
             <Box>
               <Typography>
-                Commande {order.orderid} /{" "}
+                <span style={{ color: "#0C6A57" }}>
+                  <strong>Commande</strong>
+                </span>{" "}
+                {order.orderid} /{" "}
                 {moment(+order.createdAt).format("DD-MM-YYYY HH:MM")}
               </Typography>
               <Typography>CHF {convertMoney(order.total)}</Typography>
@@ -138,34 +143,49 @@ const Orderlist = ({ order, type, taskid }) => {
             {order.products.map((prod, idx) => (
               <>
                 <Card
-                  key={idx}
                   sx={{
-                    mt: 2,
-                    mb: 2,
                     boxShadow: "none",
+                    borderRadius: 0,
+                    mt: 1,
+                    mb: 1,
                     display: "flex",
-                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
                 >
-                  <Box>
-                    <Typography
-                      variant="body1"
-                      onClick={() => navigate(`/product/${prod.productid}`)}
+                  <Box sx={{ height: "100px", width: "100px", mr: 4 }}>
+                    <CardMedia
                       sx={{
-                        cursor: "pointer",
-                        color: "#1F6A57",
+                        objectFit: "contain",
+                        width: "100%",
+                        height: "100%",
                       }}
+                      component="img"
+                      alt="some product"
+                      height="100"
+                      image={prod.productDetails.images[0].url}
+                    />
+                  </Box>
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: "#0C6A57",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => navigate(`/product/${prod.productid}`)}
                     >
                       {prod.productDetails.name}
                     </Typography>
                     <Typography variant="caption">
-                      {prod.productDetails.description} /{" "}
-                      {prod.productDetails.type}
+                      {prod.productDetails.description}
                     </Typography>
-                  </Box>
-                  <Box>
                     <Typography variant="caption">
-                      CHF {convertMoney(prod.price)}
+                      Price: CHF {convertMoney(prod.price)}
+                    </Typography>
+                    <Typography variant="caption">
+                      Quantity : {prod.quantity}
                     </Typography>
                   </Box>
                 </Card>

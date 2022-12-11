@@ -70,7 +70,15 @@ const Shopping = () => {
                 </Box>
                 <Divider sx={{ mt: 1, mb: 2 }} />
 
-                <Confirmpayment />
+                {userData && (
+                  <Confirmpayment total={mapShoppingCard(basket)[1]} />
+                )}
+                {!userData && (
+                  <Button variant="contained" fullWidth disabled={true}>
+                    Please login to continue
+                  </Button>
+                )}
+                <br />
               </Box>
             </Box>
           </Grid>

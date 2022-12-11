@@ -1,11 +1,13 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { Grid, Box } from "@mui/material";
+import { ContextAPI } from "../utils/ContextAPI";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const { setLoading } = useContext(ContextAPI);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -49,7 +51,9 @@ const Products = () => {
         .catch((error) => console.log(error));
     };
 
+    setLoading(true);
     getProducts();
+    setLoading(false);
   }, []);
 
   return (

@@ -1,14 +1,16 @@
 import { Typography } from "@mui/material";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Pagination } from "@mui/material";
 import axios from "axios";
 import Orderlist from "../components/orderlist";
+import { ContextAPI } from "../utils/ContextAPI";
 
 const Pendingorder = () => {
   const [pendingOrders, setPendingOrders] = useState([]);
   const [page, setPage] = useState(1);
   const [lowbound, setLowbound] = useState(0);
   const [upbound, setUpbound] = useState(4);
+  const { setLoading } = useContext(ContextAPI);
 
   const pageNumber = () => {
     return pendingOrders &&
@@ -44,6 +46,9 @@ const Pendingorder = () => {
                 productDetails {
                   name
                   description
+                  images {
+                    url
+                  }
                 }
               }
               total
@@ -77,24 +82,27 @@ const Pendingorder = () => {
         .catch((error) => console.log(error));
     };
 
+    setLoading(true);
     getPendingOrders();
+    setLoading(false);
   }, []);
   return (
     <Fragment>
       <Typography variant="h6">
         <strong>Pending orders</strong>
       </Typography>
-      {pendingOrders &&
-        pendingOrders
-          .slice(lowbound, upbound)
-          .map((porder, idx) => (
-            <Orderlist
-              key={porder.order.orderid}
-              order={porder.order}
-              type={"pending"}
-              taskid={porder.taskid}
-            />
-          ))}
+      {pendingOrders && pendingOrders.length !== 0
+        ? pendingOrders
+            .slice(lowbound, upbound)
+            .map((porder, idx) => (
+              <Orderlist
+                key={porder.order.orderid}
+                order={porder.order}
+                type={"pending"}
+                taskid={porder.taskid}
+              />
+            ))
+        : "No pending orders."}
       <Pagination
         sx={{
           marginTop: "20px",

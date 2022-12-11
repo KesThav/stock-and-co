@@ -26,11 +26,12 @@ import PendingActionsOutlinedIcon from "@mui/icons-material/PendingActionsOutlin
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import Face6OutlinedIcon from "@mui/icons-material/Face6Outlined";
 import HistoryEduOutlinedIcon from "@mui/icons-material/HistoryEduOutlined";
+import { LoadingComponent } from "../utils/loading.jsx";
 
 const drawerWidth = 240;
 
 export default function ClippedDrawer({ children, d, window }) {
-  const { basket, userData, count } = useContext(ContextAPI);
+  const { basket, userData, count, loading } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -55,12 +56,12 @@ export default function ClippedDrawer({ children, d, window }) {
             permission: ["admin"],
             link: "pending-orders",
           },
-          {
+          /*{
             icon: <SearchOutlinedIcon />,
             name: "Search for user",
             permission: ["admin"],
             link: "search-user",
-          },
+          },*/
           {
             icon: <HistoryEduOutlinedIcon />,
             name: "Logs",
@@ -120,6 +121,7 @@ export default function ClippedDrawer({ children, d, window }) {
             noWrap
             component="div"
             onClick={() => navigate("/")}
+            sx={{ cursor: "pointer" }}
           >
             Stock&Co
           </Typography>
@@ -204,12 +206,12 @@ export default function ClippedDrawer({ children, d, window }) {
             >
               {drawer}
             </Drawer>
-            )
           </Box>
         </>
       )}
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
+        <LoadingComponent loading={loading} />
         {children}
       </Box>
     </Box>

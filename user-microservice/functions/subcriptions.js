@@ -76,11 +76,11 @@ export const subscriptions = (client) => {
       if (oneUser && ptype == "Point") {
         oneUser.points -= task.variables.get("total");
         await oneUser.save();
-        logs.log(
-          "info",
-          `Collect payment | ${orderid} | Step 2 | Payment of User ${oneUser._id} collected.`
-        );
       }
+      logs.log(
+        "info",
+        `Collect payment | ${orderid} | Step 2 | Payment of User ${oneUser._id} collected.`
+      );
 
       await taskService.complete(task);
     } catch (err) {

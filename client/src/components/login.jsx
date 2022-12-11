@@ -75,6 +75,7 @@ const Login = ({ setPosition }) => {
       .then((response) => {
         localStorage.setItem("token", response.data.data.login.token);
         navigate("/");
+        window.location.reload();
       })
       .catch((err) => console.log(err));
   };
@@ -148,6 +149,7 @@ const Login = ({ setPosition }) => {
                 href="#"
                 variant="body2"
                 onClick={() => setPosition(1)}
+                sx={{ cursor: "pointer" }}
               >
                 {"Don't have an account? Sign Up"}
               </Typography>

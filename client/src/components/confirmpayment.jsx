@@ -21,7 +21,7 @@ import Divider from "@mui/material/Divider";
 import { useEffect } from "react";
 import Debitcard from "./debitcard";
 
-const Confirmpayment = () => {
+const Confirmpayment = ({ total }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -42,6 +42,7 @@ const Confirmpayment = () => {
 
   const handleClickOpen = () => {
     setOpen(true);
+    setPaymentType("Card");
   };
 
   const handleClose = () => {
@@ -204,10 +205,14 @@ const Confirmpayment = () => {
             </RadioGroup>
             <Divider />
           </Box>
-          <Debitcard data={creditCard} />
-        </DialogContent>
-        <DialogContent>
-          <Box>{paymentType === "Point" && points}</Box>
+          {paymentType === "Card" && <Debitcard data={creditCard} />}
+          <Box style={{ color: points < total ? "#ff6a57" : "#0C6A57" }}>
+            {paymentType === "Point" && points < total
+              ? `Not enough points. Only ${points} Left.`
+              : paymentType === "Point" && points > total
+              ? `${points} points Left.`
+              : null}
+          </Box>
         </DialogContent>
         <DialogActions
           sx={{
@@ -229,6 +234,7 @@ const Confirmpayment = () => {
             onClick={() => startPayment(paymentType)}
             autoFocus
             sx={{ mr: 2 }}
+            disabled={paymentType === "Point" && points < total}
           >
             Validate payment
           </Button>

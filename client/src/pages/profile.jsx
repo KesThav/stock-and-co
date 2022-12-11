@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import Orderlist from "../components/orderlist";
 
 const Profile = () => {
-  const { userData, user, getUser } = useContext(ContextAPI);
+  const { userData, user, getUser, setLoading } = useContext(ContextAPI);
 
   const [orders, setOrders] = useState([]);
   const [page, setPage] = useState(1);
@@ -26,6 +26,9 @@ const Profile = () => {
               name
               description
               type
+            	images {
+                url
+              }
             }
           }
           status
@@ -78,8 +81,10 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     getOrders(userData._id);
     getUser(userData._id);
+    setLoading(false);
   }, []);
 
   return (

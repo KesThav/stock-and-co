@@ -16,7 +16,8 @@ const ProductDetail = () => {
 
   let { productid } = useParams();
 
-  let { basket, setBasket, setCount, count } = useContext(ContextAPI);
+  let { basket, setBasket, setCount, count, setLoading } =
+    useContext(ContextAPI);
 
   let [quantity, setQuanity] = useState(0);
 
@@ -67,7 +68,9 @@ const ProductDetail = () => {
         .catch((error) => console.log(error));
     };
 
+    setLoading(true);
     productid && getProducts(productid);
+    setLoading(false);
   }, [count]);
 
   const Item = (props) => {
@@ -149,7 +152,9 @@ const ProductDetail = () => {
               {product && product.images && (
                 <>
                   <Grid item xs={12} sm={7} md={7}>
-                    <Carousel style={{ minWidth: "600px" }}>
+                    <Carousel
+                      style={{ /*minWidth: "600px",*/ objectFit: "contain" }}
+                    >
                       {product.images.map((image, i) => (
                         <Item key={i} image={image.url} />
                       ))}

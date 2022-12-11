@@ -48,6 +48,8 @@ function App() {
     JSON.parse(localStorage.getItem("basket")) || []
   );
 
+  const [loading, setLoading] = useState(false);
+
   const [user, setUser] = useState([]);
 
   const getUser = async (userid) => {
@@ -159,6 +161,8 @@ function App() {
           count,
           logs,
           getLogs,
+          setLoading,
+          loading,
         }}
       >
         <ThemeProvider theme={theme}>
