@@ -153,7 +153,12 @@ export default function ClippedDrawer({ children, d, window }) {
                 onClick={() => navigate("/profile")}
               />
             ) : (
-              <p onClick={() => navigate("/login")}>Login</p>
+              <Typography
+                onClick={() => navigate("/login")}
+                sx={{ color: "white" }}
+              >
+                Login
+              </Typography>
             )}
           </IconButton>
         </Box>

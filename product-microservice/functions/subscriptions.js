@@ -11,7 +11,7 @@ export const subscriptions = (client) => {
         let order = task.variables.get("order");
         logs.log(
           "info",
-          `Update product quantity | Listening to update_product_quantity`
+          `Update product quantity | | | Updating product quantity.`
         );
         for (let i = 0; i < order.products.length; i++) {
           let oneProduct = await Product.findOne({
@@ -22,10 +22,10 @@ export const subscriptions = (client) => {
             await oneProduct.save();
           }
         }
-        logs.log("info", `Update product quantity | Update ends.`);
+        logs.log("info", `Update product quantity | | | Update ends.`);
         await taskService.complete(task);
       } catch (err) {
-        logs.logs("error", `Update product quantity | ${err}`);
+        console.log("error", `Update product quantity | ${err}`);
       }
     }
   );

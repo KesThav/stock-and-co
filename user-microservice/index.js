@@ -21,7 +21,7 @@ import logs from "./functions/logger.js";
 export const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "http://localhost:3000",
 };
 
 const db_url =

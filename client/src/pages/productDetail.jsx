@@ -112,6 +112,21 @@ const ProductDetail = () => {
     window.location.reload();
   };
 
+  const mapComments = (products) => {
+    const users = Array.from(
+      new Set(products.map((prod) => prod.userDetails.name))
+    );
+    while (users.length < 4) {
+      users.push("Anonymous");
+    }
+    console.log(users);
+    return users.slice(0, 4).map((user, i) => (
+      <Grid item xs={6} sm={3}>
+        <UserCard key={i} username={user} i={i} />
+      </Grid>
+    ));
+  };
+
   return (
     <Fragment>
       <div
@@ -274,15 +289,7 @@ const ProductDetail = () => {
                         These people also bought the product
                       </Typography>
                       <Grid container spacing={2}>
-                        {product.orderList.slice(0, 4).map((prod, i) => (
-                          <Grid item xs={6} sm={3}>
-                            <UserCard
-                              username={prod.userDetails.name}
-                              key={i}
-                              i={i}
-                            />
-                          </Grid>
-                        ))}
+                        {product && mapComments(product.orderList)}
                       </Grid>
                     </>
                   )}

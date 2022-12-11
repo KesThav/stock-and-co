@@ -11,7 +11,7 @@ export const subscriptions = (client) => {
       const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `ID Payment with point | Order ${orderid} | Step 1 | Listening to User ${order.userid}`
+        `Payment with point | ${orderid} | Step 1 | Reading User ${order.userid} points.`
       );
       let oneUser = await User.findOne({ _id: order.userid });
       const localVariable = new Variables();
@@ -24,7 +24,7 @@ export const subscriptions = (client) => {
         localVariable.set("total", amount);
         logs.log(
           "info",
-          `ID Payment with point | Order ${orderid} | Step 1 | User ${oneUser._id} has enough point.`,
+          `Payment with point | ${orderid} | Step 1 | User ${oneUser._id} has enough point.`,
           {
             user: order.userid,
           }
@@ -34,13 +34,13 @@ export const subscriptions = (client) => {
         localVariable.set("enough_point", false);
         logs.log(
           "info",
-          `ID Payment with point | Order ${orderid} | Step 1 | User ${oneUser._id} don't have enough point. Process ends.`,
+          `Payment with point | ${orderid} | Step 1 | User ${oneUser._id} don't have enough point. Process ends.`,
           { user: order.userid }
         );
         await taskService.complete(task, localVariable);
       }
     } catch (err) {
-      logs.log("error", `Payment with point | ${err}`);
+      console.log("error", `Payment with point | ${err}`);
     }
   });
 
@@ -51,15 +51,15 @@ export const subscriptions = (client) => {
       const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `ID Payment with card | Order ${orderid} | Step 1 | Listening to User ${order.userid}`
+        `Payment with card | ${orderid} | Step 1 | Reading User ${order.userid} card.`
       );
       logs.log(
         "info",
-        `ID Payment with card | Order ${orderid} | Step 1 | User ${order.userid} payment is complete.`
+        `Payment with card | ${orderid} | Step 1 | User ${order.userid} card is accepted.`
       );
       await taskService.complete(task);
     } catch (err) {
-      logs.log("error", `Payment with card | ${err}`);
+      console.log("error", `Payment with card | ${err}`);
     }
   });
 
@@ -70,7 +70,7 @@ export const subscriptions = (client) => {
       const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `ID Collect payment | Order ${orderid} | Step 2 | Listening to User ${order.userid}`
+        `Collect payment | ${orderid} | Step 2 | Validating payment of User ${order.userid}.`
       );
       const oneUser = await User.findOne({ _id: order.userid });
       if (oneUser && ptype == "Point") {
@@ -78,13 +78,13 @@ export const subscriptions = (client) => {
         await oneUser.save();
         logs.log(
           "info",
-          `ID Collect payment | Order ${orderid} | Step 2 | Payment of User ${oneUser._id} collected.`
+          `Collect payment | ${orderid} | Step 2 | Payment of User ${oneUser._id} collected.`
         );
       }
 
       await taskService.complete(task);
     } catch (err) {
-      logs.log("error", `Collect payment | ${err}`);
+      console.log("error", `Collect payment | ${err}`);
     }
   });
 
@@ -94,7 +94,7 @@ export const subscriptions = (client) => {
       const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `ID Update points | Order ${orderid} | Step 4 | listening to User ${order.userid}`
+        `Update points | ${orderid} | Step 4 | Updating User ${order.userid} points.`
       );
       const oneUser = await User.findOne({ _id: order.userid });
       if (oneUser) {
@@ -103,12 +103,12 @@ export const subscriptions = (client) => {
         await oneUser.save();
         logs.log(
           "info",
-          `ID Update points | Order ${orderid} | Step 4 | User ${oneUser._id} has gained by ${newPoints} points.`
+          `Update points | ${orderid} | Step 4 | User ${oneUser._id} has gained by ${newPoints} points.`
         );
       }
       await taskService.complete(task);
     } catch (err) {
-      logs.log("error", `Update points | ${err}`);
+      console.log("error", `Update points | ${err}`);
     }
   });
 };
