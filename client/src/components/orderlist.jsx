@@ -101,11 +101,19 @@ const Orderlist = ({ order, type, taskid }) => {
             <Box>
               <Typography>
                 <span style={{ color: "#0C6A57" }}>
-                  <strong>Commande</strong>
+                  <strong>Order</strong>
                 </span>{" "}
                 {order.orderid} /{" "}
                 {moment(+order.createdAt).format("DD-MM-YYYY HH:MM")}
               </Typography>
+              {type === "pending" && (
+                <Typography>
+                  <span style={{ color: "#0C6A57" }}>
+                    <strong>User</strong>
+                  </span>{" "}
+                  {order.userDetails.name}
+                </Typography>
+              )}
               <Typography>CHF {convertMoney(order.total)}</Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -113,7 +121,7 @@ const Orderlist = ({ order, type, taskid }) => {
                 <Chip
                   label={order.status}
                   sx={{
-                    bgcolor: order.status === "Paid" ? "#B8E8FC" : "#C8FFD4",
+                    bgcolor: order.status === "Paid" ? "#78c0df" : "#C8FFD4",
                   }}
                 />
               )}

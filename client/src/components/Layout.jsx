@@ -15,7 +15,6 @@ import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { useContext, Fragment } from "react";
 import { ContextAPI } from "../utils/ContextAPI.jsx";
-import isAuth from "../utils/isAuth.jsx";
 import { useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
@@ -31,7 +30,7 @@ import { LoadingComponent } from "../utils/loading.jsx";
 const drawerWidth = 240;
 
 export default function ClippedDrawer({ children, d, window }) {
-  const { basket, userData, count, loading } = useContext(ContextAPI);
+  const { basket, userData, loading } = useContext(ContextAPI);
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -148,7 +147,7 @@ export default function ClippedDrawer({ children, d, window }) {
             />
           </Badge>
           <IconButton sx={{ p: 0 }}>
-            {isAuth() ? (
+            {userData ? (
               <Avatar
                 alt="Remy Sharp"
                 src="/static/images/avatar/2.jpg"

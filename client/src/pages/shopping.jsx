@@ -65,7 +65,7 @@ const Shopping = () => {
                     <strong>Total</strong>
                   </Typography>
                   <Typography>
-                    <strong>{mapShoppingCard(basket)[1]}</strong>
+                    <strong>{`CHF ${convertMoney(mapShoppingCard(basket)[1])}`}</strong>
                   </Typography>
                 </Box>
                 <Divider sx={{ mt: 1, mb: 2 }} />

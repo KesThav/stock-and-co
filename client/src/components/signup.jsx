@@ -116,10 +116,10 @@ const Signup = ({ setPosition }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="given-name"
-                name="firstName"
+                name="firstname"
                 required
                 fullWidth
-                id="firstName"
+                id="firstname"
                 label="First Name"
                 autoFocus
                 onChange={(e) => handleChanges(e)}
@@ -129,9 +129,9 @@ const Signup = ({ setPosition }) => {
               <TextField
                 required
                 fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
+                id="lastname"
+                label="Last name"
+                name="lastname"
                 autoComplete="family-name"
                 onChange={(e) => handleChanges(e)}
               />

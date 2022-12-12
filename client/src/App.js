@@ -15,6 +15,8 @@ import Shopping from "./pages/shopping";
 import Logs from "./pages/logs";
 import moment from "moment";
 import PendingOrders from "./pages/pendingorders";
+import ProtectedRoute from "./middlewares/ProtectedRoute";
+import AdminRoute from "./middlewares/AdminRoute";
 
 var userData;
 const token = localStorage.getItem("token");
@@ -188,17 +190,21 @@ function App() {
               <Route
                 path="/profile"
                 element={
-                  <Layout d={true}>
-                    <Profile />
-                  </Layout>
+                  <ProtectedRoute>
+                    <Layout d={true}>
+                      <Profile />
+                    </Layout>
+                  </ProtectedRoute>
                 }
               />
               <Route
                 path="/logs"
                 element={
-                  <Layout d={true}>
-                    <Logs />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout d={true}>
+                      <Logs />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
               <Route
@@ -212,9 +218,11 @@ function App() {
               <Route
                 path="/pending-orders"
                 element={
-                  <Layout d={true}>
-                    <PendingOrders />
-                  </Layout>
+                  <AdminRoute>
+                    <Layout d={true}>
+                      <PendingOrders />
+                    </Layout>
+                  </AdminRoute>
                 }
               />
             </Routes>
