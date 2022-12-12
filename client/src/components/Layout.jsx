@@ -148,11 +148,7 @@ export default function ClippedDrawer({ children, d, window }) {
           </Badge>
           <IconButton sx={{ p: 0 }}>
             {userData ? (
-              <Avatar
-                alt="Remy Sharp"
-                src="/static/images/avatar/2.jpg"
-                onClick={() => navigate("/profile")}
-              />
+              <Avatar onClick={() => navigate("/profile")} />
             ) : (
               <Typography
                 onClick={() => navigate("/login")}
