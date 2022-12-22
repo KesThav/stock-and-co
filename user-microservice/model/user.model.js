@@ -16,7 +16,7 @@ const userSchema = new Mongoose.Schema(
     },
     role: {
       type: String,
-      required: true,
+      default: "user",
     },
     points: {
       type: Number,

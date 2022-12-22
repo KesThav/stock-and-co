@@ -1,14 +1,33 @@
+//contains function to prepare queries and data for benchmarking
 import axios from "axios";
 import mongoose from "mongoose";
-import { createOrder } from "./functions/functions.js";
 import { v4 as uuidv4 } from "uuid";
-import { startInstance } from "./functions/camunda.js";
 import fs from "fs";
 
-async function sleep(milli_seconds = 1000) {
-  return new Promise((done) => setTimeout(() => done(), milli_seconds));
-}
+//get users query
+export const getUsersQuery = () => {
+  return `query {
+    users {
+      name
+      email
+      points
+    }
+  }`;
+};
 
+//get products query
+export const getProductsQuery = () => {
+  return `query {
+    products {
+      name
+      description
+      price
+      quantity
+    }
+  }`;
+};
+
+//this function get all products
 const getProducts = async () => {
   let products = [];
   var productQuery = JSON.stringify({
@@ -23,7 +42,7 @@ const getProducts = async () => {
 
   const productConfig = {
     method: "post",
-    url: "http://product-microservice:8084/graphql",
+    url: "http://localhost:4000/graphql",
     headers: {
       "Content-Type": "application/json",
     },
@@ -56,7 +75,7 @@ const getUsers = async () => {
 
   const userConfig = {
     method: "post",
-    url: "http://user-microservice:8082/graphql",
+    url: "http://localhost:4000/graphql",
     headers: {
       "Content-Type": "application/json",
     },
@@ -76,12 +95,22 @@ const getUsers = async () => {
   }
 };
 
-export const load_orders = async () => {
+//prepare orders
+export const getOrderMutation = (userid, ptype, orderid, products) => {
+  return `mutation startOrder($userid: String, $order:OrderInput,$ptype: String, $orderid:String){
+    startOrder(userid:$userid,order:$order,ptype:$ptype,orderid:$orderid) {
+      message
+      __typename
+    }
+  }`;
+};
+
+export const prepareOrders = async () => {
   console.log("Loading products and users...");
   const productData = await getProducts();
   const userData = await getUsers();
   const orderlist = [];
-
+  let orderCount = 0;
   //generate fake orders
   console.log("Loading orders...");
   try {
@@ -120,41 +149,32 @@ export const load_orders = async () => {
           userid: userData[i]._id,
           orderid: myorder.orderid,
           ptype: "Card",
-          order: myorder,
+          order: {
+            products: myorder.products,
+            userid: myorder.userid,
+            orderid: myorder.orderid,
+          },
         };
 
         orderlist.push(data_camunda);
-
-        //await createOrder(myorder);
-        await startInstance(data_camunda);
-        await sleep(1000);
+        orderCount++;
+        console.log(`order nbr ${orderCount} created`);
       }
     }
-    console.log("Orders loaded !");
-    validate_orders();
+    console.log("Writing orders to file...");
+    try {
+      await fs.writeFile(
+        "./data/orders.js",
+        JSON.stringify(orderlist),
+        (err) => {
+          if (err) throw err;
+          console.log("Orders saved to file");
+        }
+      );
+    } catch (err) {
+      console.log(err);
+    }
   } catch (err) {
     console.log(err);
-  }
-};
-
-export const validate_orders = async () => {
-  console.log("Validating orders...");
-  const res = await axios.get("http://camunda:8080/engine-rest/task");
-
-  console.log("Tasks retrieved !");
-  const taskid = [];
-  if (res) {
-    console.log("Validating orders...");
-    res.data.forEach((element) => {
-      taskid.push(element.id);
-    });
-    for (let task of taskid) {
-      await axios.post(
-        `http://camunda:8080/engine-rest/task/${task}/complete`,
-        {}
-      );
-      await sleep(1000);
-    }
-    console.log("Orders validated !");
   }
 };

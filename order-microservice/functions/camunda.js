@@ -49,11 +49,15 @@ export const startInstance = async (data) => {
       "content-type": "application/json",
     };
 
-    const res = await axios.post(
+    const response = await axios.post(
       "http://camunda:8080/engine-rest/process-definition/key/order-process/start",
       variables,
       headers
     );
+    if (response.data.errors) {
+      throw new Error(response.data.errors[0].message);
+    }
+    console.log(response.data);
     logs.log("info", `Order instance started.`);
   } catch (err) {
     logs.log("error", `Error when starting order instance : ${err}`);
