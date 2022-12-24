@@ -16,6 +16,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
 import logs from "./functions/logger.js";
 import { subscriptions } from "./functions/subscriptions.js";
+import { addProduct, getAllProducts } from "./functions/functions.js";
 
 export const app = express();
 
@@ -73,6 +74,16 @@ const config = {
 const client = new Client(config);
 
 subscriptions(client);
+
+app.post("/product", async (req, res) => {
+  const response = await addProduct(req.body);
+  res.send(response);
+});
+
+app.get("/products", async (req, res) => {
+  const response = await getAllProducts();
+  res.send(response);
+});
 
 const port = process.env.PRODUCT_PORT;
 

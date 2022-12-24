@@ -1,5 +1,5 @@
 import "./functions/winston-workaround.js";
-import express from "express";
+import express, { Router } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import Mongoose from "mongoose";
@@ -16,7 +16,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
-import logs from "./functions/logger.js";
+import { getAllUsers, getUser } from "./functions/functions.js";
 
 export const app = express();
 
@@ -78,6 +78,17 @@ const load_users = async () => {
   }
   console.log("User loaded !");
 };
+
+app.get("/users", async (req, res) => {
+  const rep = await getAllUsers();
+  res.send(rep);
+});
+
+app.get(`/users/:userid`, async (req, res) => {
+  const rep = await getUser(req.params.userid);
+  res.send(rep);
+});
+
 const port = process.env.USER_PORT;
 
 app.listen(port, async () => {

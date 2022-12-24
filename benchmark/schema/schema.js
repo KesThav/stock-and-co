@@ -6,7 +6,11 @@ import {
   GraphQLSchema,
 } from "graphql";
 import { getUsersBenchmark } from "../functions/concurrentBenchmark.js";
-import { b_getUsers, b_createProduct } from "../functions/parallelBenchmark.js";
+import {
+  b_getUsers_GraphQL,
+  b_createProduct_GraphQL,
+  b_getProductBoughtByUser_GraphQL,
+} from "../functions/sequentialBenchmark.js";
 
 const result = new GraphQLObjectType({
   name: "Result",
@@ -145,10 +149,15 @@ const Query = new GraphQLObjectType({
       },
       resolve: (parent, args) => getUsersBenchmark(args),
     },
-    parallelB_getUsers: {
+    sequentialB_getUsers_GraphQL: {
       type: returnMessage,
       args: {},
-      resolve: () => b_getUsers(),
+      resolve: () => b_getUsers_GraphQL(),
+    },
+    sequentialB_getProductBoughtByUser_GraphQL: {
+      type: returnMessage,
+      args: {},
+      resolve: () => b_getProductBoughtByUser_GraphQL(),
     },
   }),
 });
@@ -167,10 +176,10 @@ const Mutation = new GraphQLObjectType({
       },
       resolve: (parent, args) => getUsersBenchmark(args),
     },
-    parallelB_createProduct: {
+    sequentialB_createProduct_GraphQL: {
       type: returnMessage,
       args: {},
-      resolve: () => b_createProduct(),
+      resolve: () => b_createProduct_GraphQL(),
     },
   }),
 });

@@ -1,0 +1,436 @@
+import axios from "axios";
+import fs from "fs";
+
+const nIterations = [1, 10, 100, 1000];
+
+export const b_getUsers_GraphQL = async () => {
+  const usersQuery = {
+    query: `query {
+      users {
+        name
+        email
+        points
+        _id
+      }
+    }`,
+    variables: {},
+  };
+
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 50; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        const response = await axios({
+          url: "http://localhost:8082/graphql",
+          method: "post",
+          headers: headers,
+          data: usersQuery,
+        });
+        if (response.data.errors) {
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_getUsers_GraphQL.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_getUsers_GraphQL saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_getUsers_GraphQL";
+};
+
+export const b_createProduct_GraphQL = async () => {
+  let createProductMutation = {
+    query: `mutation addProduct($name:String!,$description:String!,$type:String!,$averageRating:Int, $quantity:Int!,$price:Float!,$images:[String]) {
+    addProduct(name:$name,description:$description,type:$type,averageRating:$averageRating,quantity:$quantity,price:$price,images:$images) {
+      name
+      description
+      type
+      averageRating
+      quantity
+      price
+      images {
+        url
+      }
+    }
+  }`,
+    variables: {
+      name: "V15 Gen 2",
+      description: "'15.60 \", Intel Core i3-1115G4, 8 Go, 256 Go, CH'",
+      type: "Ordinateur portable",
+      averageRating: 4,
+      price: 599,
+      quantity: 10,
+      images: [
+        "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/7/dfbcfa48-2952-4a94-a27f-0ed09c3312ea.jpg",
+        "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/8/95763f79-aa6e-426d-8f5e-fedb7fc31ba1.jpg",
+        "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/9/9e565b50-f254-44e8-b475-ab142c2c84f5.jpg",
+        "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/8/0/Lenovo_V15_G2_ITL_CT2_02.jpeg",
+      ],
+    },
+  };
+
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 50; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        const response = await axios({
+          url: "http://localhost:8084/graphql",
+          method: "post",
+          headers: headers,
+          data: createProductMutation,
+        });
+        if (response.data.errors) {
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_createProduct_GraphQL.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_createProduct_GraphQL saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_createProduct_GraphQL";
+};
+
+//function that return the list and product bought by a user
+export const b_getProductBoughtByUser_GraphQL = async () => {
+  const productBoughtQuery = {
+    query: `{
+      products {
+        _id
+        name
+        description
+        type
+        averageRating
+        quantity
+        price
+        images {
+          url
+        }
+        orderList {
+          userDetails {
+            _id
+            name
+            email
+            points
+          }
+        }
+      }
+    }`,
+    variables: {},
+  };
+
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 4; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        const response = await axios({
+          url: "http://localhost:4000/graphql",
+          method: "post",
+          headers: headers,
+          data: productBoughtQuery,
+        });
+        if (response.data.errors) {
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_userThatBoughtProduct_GraphQL.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_userThatBoughtProduct_GraphQL saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_userThatBoughtProduct_GraphQL";
+};
+//################################################## REST ##################################################
+export const b_getUsers_REST = async () => {
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 50; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        try {
+          const response = await axios({
+            url: "http://localhost:8082/users",
+            method: "get",
+            headers: headers,
+          });
+        } catch (err) {
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_getUsers_REST.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_getUsers_REST saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_getUsers_REST";
+};
+
+export const b_createProduct_REST = async () => {
+  let product = {
+    name: "V15 Gen 2",
+    description: "'15.60 \", Intel Core i3-1115G4, 8 Go, 256 Go, CH'",
+    type: "Ordinateur portable",
+    averageRating: 4,
+    price: 599,
+    quantity: 10,
+    images: [
+      "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/7/dfbcfa48-2952-4a94-a27f-0ed09c3312ea.jpg",
+      "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/8/95763f79-aa6e-426d-8f5e-fedb7fc31ba1.jpg",
+      "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/7/9/9e565b50-f254-44e8-b475-ab142c2c84f5.jpg",
+      "https://static.digitecgalaxus.ch/Files/5/2/0/9/4/0/8/0/Lenovo_V15_G2_ITL_CT2_02.jpeg",
+    ],
+  };
+
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 50; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        try {
+          const response = await axios({
+            url: "http://localhost:8084/product",
+            method: "post",
+            headers: headers,
+            data: product,
+          });
+        } catch (err) {
+          console.log(err);
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_createProduct_REST.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_createProduct_REST saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_createProduct_REST";
+};
+
+export const getProductBoughtByUser_REST = async () => {
+  //get the list of products
+  const userThatBoughtProduct = {};
+  try {
+    const allProducts = await axios.get("http://localhost:8084/products");
+    for (let product of allProducts.data) {
+      //for each product get the list of users in the order list that bought it
+      //get data of the user
+      const orders = await axios.get(
+        `http:/localhost:8083/orders/products/${product._id}`
+      );
+      for (let order of orders.data) {
+        const user = await axios.get(
+          `http:/localhost:8082/users/${order.userid}`
+        );
+        if (!userThatBoughtProduct[product._id]) {
+          userThatBoughtProduct[product._id] = [user.data];
+        } else {
+          userThatBoughtProduct[product._id].push(user.data);
+        }
+      }
+    }
+    return userThatBoughtProduct;
+  } catch (err) {
+    console.log(err);
+  }
+
+  //for each product get the list of users in the order list that bought it
+  //get data of the user
+};
+
+export const b_getProductBoughtByUser_REST = async () => {
+  const results = {
+    1: [],
+    10: [],
+    100: [],
+    1000: [],
+    10000: [],
+    errors_1: [],
+    errors_10: [],
+    errors_100: [],
+    errors_1000: [],
+    errors_10000: [],
+  };
+  for (let z = 0; z < 4; z++) {
+    for (let i = 0; i < nIterations.length; i++) {
+      let errors = 0;
+      let time = Date.now();
+      for (let j = 0; j < nIterations[i]; j++) {
+        console.log(
+          `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
+        );
+        const headers = {
+          "content-type": "application/json",
+        };
+        try {
+          const response = await getProductBoughtByUser_REST();
+        } catch (err) {
+          console.log(err);
+          errors++;
+        }
+      }
+      results[nIterations[i]].push(Date.now() - time);
+      results[`errors_${nIterations[i]}`].push(errors);
+    }
+  }
+  try {
+    await fs.writeFile(
+      "./results/sequential_userThatBoughtProduct_REST.json",
+      JSON.stringify(results),
+      (err) => {
+        if (err) throw err;
+        console.log("sequential_userThatBoughtProduct_REST saved to file");
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
+  return "running benchmark sequential_userThatBoughtProduct_REST";
+};

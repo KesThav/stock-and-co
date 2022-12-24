@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, ".env") });
-import logs from "./functions/logger.js";
+import { getProductOrders } from "./functions/functions.js";
 
 export const app = express();
 
@@ -61,6 +61,11 @@ app.use(
     graphiql: true,
   })
 );
+
+app.get(`/orders/products/:productid`, async (req, res) => {
+  const orders = await getProductOrders(req.params.productid);
+  res.send(orders);
+});
 
 const port = process.env.ORDER_PORT;
 
