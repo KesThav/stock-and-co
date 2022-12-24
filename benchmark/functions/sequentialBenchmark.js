@@ -355,34 +355,34 @@ export const b_createProduct_REST = async () => {
 };
 
 export const getProductBoughtByUser_REST = async () => {
-  //get the list of products
-  const userThatBoughtProduct = {};
   try {
-    const allProducts = await axios.get("http://localhost:8084/products");
-    for (let product of allProducts.data) {
-      //for each product get the list of users in the order list that bought it
-      //get data of the user
-      const orders = await axios.get(
-        `http:/localhost:8083/orders/products/${product._id}`
-      );
-      for (let order of orders.data) {
-        const user = await axios.get(
-          `http:/localhost:8082/users/${order.userid}`
+    const ordersResponse = await axios.get(`http://localhost:8083/orders`);
+    const orders = ordersResponse.data;
+
+    const productsResponse = await axios.get(`http://localhost:8084/products`);
+    const products = productsResponse.data;
+
+    const usersResponse = await axios.get(`http://localhost:8082/users`);
+    const users = usersResponse.data;
+
+    const productInfo = {};
+    for (const order of orders) {
+      for (const prod of order.products) {
+        const product = products.find(
+          (product) => product._id === prod.productid
         );
-        if (!userThatBoughtProduct[product._id]) {
-          userThatBoughtProduct[product._id] = [user.data];
-        } else {
-          userThatBoughtProduct[product._id].push(user.data);
+        const user = users.find((user) => user._id === order.userid);
+
+        if (!productInfo[product._id]) {
+          productInfo[product._id] = [product, []];
         }
+        productInfo[product._id][1].push(user);
       }
     }
-    return userThatBoughtProduct;
-  } catch (err) {
-    console.log(err);
+    return productInfo;
+  } catch (error) {
+    console.error(error);
   }
-
-  //for each product get the list of users in the order list that bought it
-  //get data of the user
 };
 
 export const b_getProductBoughtByUser_REST = async () => {
@@ -398,7 +398,7 @@ export const b_getProductBoughtByUser_REST = async () => {
     errors_1000: [],
     errors_10000: [],
   };
-  for (let z = 0; z < 4; z++) {
+  for (let z = 0; z < 50; z++) {
     for (let i = 0; i < nIterations.length; i++) {
       let errors = 0;
       let time = Date.now();
