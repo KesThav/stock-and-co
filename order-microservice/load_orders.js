@@ -84,6 +84,7 @@ export const load_orders = async () => {
 
   //generate fake orders
   console.log("Loading orders...");
+  let order = 1;
   try {
     for (let i = 0; i < userData.length; i++) {
       const loopSize = Math.floor(5 * Math.random() + 1);
@@ -123,11 +124,12 @@ export const load_orders = async () => {
           order: myorder,
         };
 
-        orderlist.push(data_camunda);
-
-        //await createOrder(myorder);
-        await startInstance(data_camunda);
-        await sleep(1000);
+        //orderlist.push(data_camunda);
+        await createOrder(myorder);
+        console.log("Order " + order + " loaded !");
+        order++;
+        //await startInstance(data_camunda);
+        //await sleep(1000);
       }
     }
     console.log("Orders loaded !");

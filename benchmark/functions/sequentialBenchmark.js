@@ -28,7 +28,7 @@ export const b_getUsers_GraphQL = async () => {
     errors_1000: [],
     errors_10000: [],
   };
-  for (let z = 0; z < 50; z++) {
+  for (let z = 0; z < 5; z++) {
     for (let i = 0; i < nIterations.length; i++) {
       let errors = 0;
       let time = Date.now();
@@ -244,7 +244,7 @@ export const b_getUsers_REST = async () => {
     errors_1000: [],
     errors_10000: [],
   };
-  for (let z = 0; z < 50; z++) {
+  for (let z = 0; z < 5; z++) {
     for (let i = 0; i < nIterations.length; i++) {
       let errors = 0;
       let time = Date.now();
@@ -398,7 +398,7 @@ export const b_getProductBoughtByUser_REST = async () => {
     errors_1000: [],
     errors_10000: [],
   };
-  for (let z = 0; z < 50; z++) {
+  for (let z = 0; z < 5; z++) {
     for (let i = 0; i < nIterations.length; i++) {
       let errors = 0;
       let time = Date.now();

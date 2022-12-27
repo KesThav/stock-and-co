@@ -72,9 +72,14 @@ app.get("/orders", async (req, res) => {
   res.send(orders);
 });
 
+app.post("/orders/load", async (req, res) => {
+  const orders = await load_orders();
+  res.send(orders);
+});
+
 const port = process.env.ORDER_PORT;
 
 app.listen(port, async () => {
   console.log(`Order-microservice listening at http://localhost:${port}`);
-  load_orders();
+  //load_orders();
 });

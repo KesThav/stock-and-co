@@ -79,6 +79,24 @@ const load_users = async () => {
   console.log("User loaded !");
 };
 
+const load_benchmark_users = async () => {
+  console.log("Loading benchmark users...");
+  for (let i = 0; i < 100000; i++) {
+    console.log("Loading user " + i);
+    try {
+      await register({
+        name: "user" + i,
+        email: "user" + i + "@gmail.com",
+        password: "password",
+        role: "user",
+      });
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+  console.log("Benchmark users loaded !");
+};
+
 app.get("/users", async (req, res) => {
   const rep = await getAllUsers();
   res.send(rep);
@@ -89,9 +107,15 @@ app.get(`/users/:userid`, async (req, res) => {
   res.send(rep);
 });
 
+app.post(`/users/load`, async (req, res) => {
+  await load_benchmark_users();
+  res.send("Users loaded !");
+});
+
 const port = process.env.USER_PORT;
 
 app.listen(port, async () => {
   console.log(`User-microservice listening at http://localhost:${port}`);
-  await load_users();
+  //await load_users();
+  //await load_benchmark_users();
 });
