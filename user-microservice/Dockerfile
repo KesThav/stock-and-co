@@ -4,7 +4,7 @@ COPY . ./
 RUN apk add curl
 RUN apk add --no-cache bash
 RUN npm install .
-
+ENV NODE_OPTIONS=--max_old_space_size=15000
 EXPOSE 8082
 
 CMD ["npm","start"]

@@ -5,7 +5,11 @@ import {
   GraphQLString,
   GraphQLSchema,
 } from "graphql";
-import { getUsersBenchmark } from "../functions/concurrentBenchmark.js";
+import {
+  getUsersBenchmark,
+  createProductBenchmark,
+  getProductBoughtByUserBenchmark,
+} from "../functions/concurrentBenchmark.js";
 import {
   b_getUsers_GraphQL,
   b_createProduct_GraphQL,
@@ -139,15 +143,10 @@ const Query = new GraphQLObjectType({
   name: "Query",
   description: "This is the root query",
   fields: () => ({
-    concurrentB_getUsers: {
+    concurrentB_getUsers_GraphQL: {
       type: result,
-      args: {
-        connections: { type: GraphQLInt },
-        pipelining: { type: GraphQLInt },
-        duration: { type: GraphQLInt },
-        workers: { type: GraphQLInt },
-      },
-      resolve: (parent, args) => getUsersBenchmark(args),
+      args: {},
+      resolve: () => getUsersBenchmark(),
     },
     sequentialB_getUsers_GraphQL: {
       type: returnMessage,
@@ -159,6 +158,11 @@ const Query = new GraphQLObjectType({
       args: {},
       resolve: () => b_getProductBoughtByUser_GraphQL(),
     },
+    concurrentB_getProductBoughtByUser_GraphQL: {
+      type: result,
+      args: {},
+      resolve: () => getProductBoughtByUserBenchmark(),
+    },
   }),
 });
 
@@ -166,20 +170,15 @@ const Mutation = new GraphQLObjectType({
   name: "Mutation",
   description: "This is the root mutation",
   fields: () => ({
-    concurrentB_createOrders: {
-      type: result,
-      args: {
-        connections: { type: GraphQLInt },
-        pipelining: { type: GraphQLInt },
-        duration: { type: GraphQLInt },
-        workers: { type: GraphQLInt },
-      },
-      resolve: (parent, args) => getUsersBenchmark(args),
-    },
     sequentialB_createProduct_GraphQL: {
       type: returnMessage,
       args: {},
       resolve: () => b_createProduct_GraphQL(),
+    },
+    concurrentB_createProduct_GraphQL: {
+      type: result,
+      args: {},
+      resolve: () => createProductBenchmark(),
     },
   }),
 });

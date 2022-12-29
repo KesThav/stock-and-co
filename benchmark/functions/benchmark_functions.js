@@ -67,3 +67,44 @@ export const createProduct_GraphQL = () => {
 
   return queryContent;
 };
+
+export const getProductBoughtByUser_GraphQL = () => {
+  const productBoughtQuery = {
+    query: `{
+      products {
+        _id
+        name
+        description
+        type
+        averageRating
+        quantity
+        price
+        images {
+          url
+        }
+        orderList {
+          userDetails {
+            _id
+            name
+            email
+            points
+          }
+        }
+      }
+    }`,
+    variables: {},
+  };
+
+  const headers = {
+    "content-type": "application/json",
+  };
+
+  const queryContent = {
+    url: "http://localhost:4000/graphql",
+    method: "post",
+    headers: headers,
+    data: productBoughtQuery,
+  };
+
+  return queryContent;
+};

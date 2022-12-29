@@ -3,6 +3,7 @@ import fs from "fs";
 import {
   getUser_GraphQL,
   createProduct_GraphQL,
+  getProductBoughtByUser_GraphQL,
 } from "./benchmark_functions.js";
 
 const nIterations = [1, 10, 100, 1000, 10000];
@@ -105,32 +106,7 @@ export const b_createProduct_GraphQL = async () => {
 
 //function that return the list and product bought by a user
 export const b_getProductBoughtByUser_GraphQL = async () => {
-  const productBoughtQuery = {
-    query: `{
-      products {
-        _id
-        name
-        description
-        type
-        averageRating
-        quantity
-        price
-        images {
-          url
-        }
-        orderList {
-          userDetails {
-            _id
-            name
-            email
-            points
-          }
-        }
-      }
-    }`,
-    variables: {},
-  };
-
+  const getProductBoughtByUserQuery = getProductBoughtByUser_GraphQL();
   const results = {
     1: [],
     10: [],
@@ -151,15 +127,8 @@ export const b_getProductBoughtByUser_GraphQL = async () => {
         console.log(
           `Iteration: ${z} - nIterations: ${nIterations[i]} - j: ${j}`
         );
-        const headers = {
-          "content-type": "application/json",
-        };
-        const response = await axios({
-          url: "http://localhost:4000/graphql",
-          method: "post",
-          headers: headers,
-          data: productBoughtQuery,
-        });
+
+        const response = await axios(getProductBoughtByUserQuery);
         if (response.data.errors) {
           errors++;
         }
@@ -183,7 +152,7 @@ export const b_getProductBoughtByUser_GraphQL = async () => {
   return "running benchmark sequential_userThatBoughtProduct_GraphQL";
 };
 //################################################## REST ##################################################
-export const b_getUsers_REST = async () => {
+export const sequential_getUsers_REST = async () => {
   const results = {
     1: [],
     10: [],
@@ -236,7 +205,7 @@ export const b_getUsers_REST = async () => {
   return "running benchmark sequential_getUsers_REST";
 };
 
-export const b_createProduct_REST = async () => {
+export const sequential_createProduct_REST = async () => {
   let product = {
     name: "V15 Gen 2",
     description: "'15.60 \", Intel Core i3-1115G4, 8 Go, 256 Go, CH'",
@@ -337,7 +306,7 @@ export const getProductBoughtByUser_REST = async () => {
   }
 };
 
-export const b_getProductBoughtByUser_REST = async () => {
+export const sequential_getProductBoughtByUser_REST = async () => {
   const results = {
     1: [],
     10: [],

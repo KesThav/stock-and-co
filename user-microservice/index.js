@@ -116,6 +116,6 @@ const port = process.env.USER_PORT;
 
 app.listen(port, async () => {
   console.log(`User-microservice listening at http://localhost:${port}`);
-  //await load_users();
+  await load_users();
   //await load_benchmark_users();
 });

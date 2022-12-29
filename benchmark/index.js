@@ -4,10 +4,16 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import schema from "./schema/schema.js";
 import {
-  b_getUsers_REST,
-  b_createProduct_REST,
-  b_getProductBoughtByUser_REST,
+  sequential_getUsers_REST,
+  sequential_createProduct_REST,
+  sequential_getProductBoughtByUser_REST,
+  getProductBoughtByUser_REST,
 } from "./functions/sequentialBenchmark.js";
+import {
+  concurrent_getUsers_REST,
+  concurrent_createProduct_REST,
+  concurrent_getProductBoughtByUser_REST,
+} from "./functions/concurrentBenchmark.js";
 import * as console from "console";
 import fs from "fs";
 
@@ -34,23 +40,42 @@ app.use(
   })
 );
 
-app.get("/benchmarks/users", async (req, res) => {
-  const users = await b_getUsers_REST();
+app.get("/benchmarks/sequential/users", async (req, res) => {
+  const users = await sequential_getUsers_REST();
   res.send(users);
 });
 
-app.post("/benchmarks/product", async (req, res) => {
-  const product = await b_createProduct_REST();
+app.post("/benchmarks/sequential/product", async (req, res) => {
+  const product = await sequential_createProduct_REST();
   res.send(product);
 });
 
-app.get("/benchmarks/products-users", async (req, res) => {
-  const products = await b_getProductBoughtByUser_REST();
+app.get("/benchmarks/sequential/products-users", async (req, res) => {
+  const products = await sequential_getProductBoughtByUser_REST();
   res.send(products);
+});
+
+app.get("/products-users", async (req, res) => {
+  const productBoughtByUser = await getProductBoughtByUser_REST();
+  res.send(productBoughtByUser);
+});
+
+app.get("/benchmarks/concurrent/users", async (req, res) => {
+  const users = await concurrent_getUsers_REST();
+  res.send(users);
+});
+
+app.get("/benchmarks/concurrrent/products-users", async (req, res) => {
+  const productBoughtByUser = await concurrent_getProductBoughtByUser_REST();
+  res.send(productBoughtByUser);
+});
+
+app.post("/benchmarks/concurrent/product", async (req, res) => {
+  const product = await concurrent_createProduct_REST();
+  res.send(product);
 });
 
 const port = 10000;
 app.listen(port, async () => {
   console.log(`Benchmark listening at http://localhost:${port}`);
-  //await prepareOrders();
 });
