@@ -4,6 +4,7 @@ library(ggplot2)
 library(plotly)
 library(tidyr)
 library(data.table)
+library(zoo)
 
 #disable scientific notation
 options(scipen=999)
@@ -67,13 +68,39 @@ for(file in files){
   data <- fromJSON(paste0("sequential/",file,".json"))
   data <- data.table::rbindlist(list(data), fill = TRUE) %>% as.data.frame()
   data['type'] = file
-  df_s_f = rbind(df_s_f,data)
+  df_s_f = dplyr::bind_rows(df_s_f,data)
 }
 
-df_s_f = df_s_f %>% select(!starts_with('errors'))
+df_s_f <- df_s_f %>% select(!starts_with('errors')) %>%
+  tidyr::separate(data = .,col = type,sep = "_",into = c("to_remove","to_remove2","func","type"),remove = FALSE) %>%
+  select(-c("to_remove","to_remove2")) %>%
+  tidyr::gather("requests","time",1:5) %>%
+  mutate(requests = as.integer(requests))
 
+#make a copy of df_s_f -> will be used for stats
+copy_df_s_f <- df_s_f
 
+#generate a dataframe with all values between 1 and 10000
+tmp_df <- data.frame(func=unique(df_s_f$func),type=unique(df_s_f$type),requests=rep(1:10000,each=6))
 
+df_s_f <- tmp_df %>% left_join(df_s_f %>%
+                                 group_by(func,type,requests) %>%
+                                 summarise(time = mean(time,na.rm=T)) %>%
+                                 ungroup() ,by=c("func","type","requests"))
 
+rm(tmp_df)
 
+df_s_f <- df_s_f %>% 
+  group_by(func,type) %>% 
+  arrange(func,type,requests) %>% 
+  mutate(times = na.spline(time)) %>% 
+  ungroup() %>%
+  mutate(times = ifelse(func == "userThatBoughtProduct" & requests > 1000, NA, times))
 
+p1 = ggplot(df_s_f,aes(x=requests,y=times,color=type)) + geom_line()  + facet_wrap(func~.,scales="free_y") + theme_bw() 
+
+ggplotly(p1)
+
+p2 = copy_df_s_f %>% mutate(requests = as.factor(requests)) %>% ggplot(data=.) + geom_boxplot(aes(x=requests,y=time,color=type)) + facet_wrap(func~.,scales="free_y") + theme_bw() 
+
+ggplotly(p2)
