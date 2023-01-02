@@ -23,6 +23,69 @@ export const getUser_GraphQL = () => {
   return queryContent;
 };
 
+export const getOrders_GraphQL = () => {
+  const orderQuery = {
+    query: `query {
+      orders {
+        userid
+        products {
+          productid
+          price
+          quantity
+        }
+        total
+        status
+        type
+        orderid
+      }
+    }
+    `,
+    variables: {},
+  };
+  const headers = {
+    "content-type": "application/json",
+  };
+  const queryContent = {
+    url: "http://localhost:8083/graphql",
+    method: "post",
+    headers: headers,
+    data: orderQuery,
+  };
+
+  return queryContent;
+};
+
+export const getProducts_GraphQL = () => {
+  const productQuery = {
+    query: `query {
+      products {
+        _id
+        name
+        description
+        type
+        averageRating
+        quantity
+        price
+        images {
+          url
+        }
+      }
+    }`,
+    variables: {},
+  };
+  const headers = {
+    "content-type": "application/json",
+  };
+  const queryContent = {
+    url: "http://localhost:8084/graphql",
+    method: "post",
+    headers: headers,
+    data: productQuery,
+  };
+
+  return queryContent;
+};
+
 export const createProduct_GraphQL = () => {
   const createProductMutation = {
     query: `mutation addProduct($name:String!,$description:String!,$type:String!,$averageRating:Int, $quantity:Int!,$price:Float!,$images:[String]) {
@@ -104,6 +167,29 @@ export const getProductBoughtByUser_GraphQL = () => {
     method: "post",
     headers: headers,
     data: productBoughtQuery,
+  };
+
+  return queryContent;
+};
+
+export const getProductBoughtByUser_GraphQL_2 = () => {
+  const queryWithVariable = {
+    query: `query {
+      getProductBoughtByUser {
+        message
+      }
+    }`,
+    variables: {},
+  };
+
+  const headers = {
+    "content-type": "application/json",
+  };
+  const queryContent = {
+    url: "http://localhost:10000/graphql",
+    method: "post",
+    headers: headers,
+    data: queryWithVariable,
   };
 
   return queryContent;

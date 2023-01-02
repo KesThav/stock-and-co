@@ -33,21 +33,24 @@ for(file in files){
 rm(data)
 df_c = do.call(data.frame,df_c)
 
+df_c = df_c %>% tidyr::separate(data = .,col = type,sep = "_",into = c("to_remove","func","type"),remove = FALSE) %>%
+  select(-c("to_remove"))
+
 #compute the percentage of success, errors and timeout for each concurrent user (1,10,100,1000,10000)
-p = df_c %>% select("type","concurrent_user","X2xx","errors","timeouts") %>%
-  group_by(type,concurrent_user) %>%
+p = df_c %>% select("type","func","concurrent_user","X2xx","errors","timeouts") %>%
+  group_by(type,func,concurrent_user) %>%
   summarise(X2xx = sum(X2xx),
             errors = sum(errors),
             timeouts = sum(timeouts)) %>%
   ungroup() %>%
-  gather("key", "value",3:5) %>%
-  group_by(type, concurrent_user) %>%
+  gather("key", "value",4:6) %>%
+  group_by(type, func,concurrent_user) %>%
   mutate(percent = round(value / sum(value) * 100,digits = 2)) %>%
   ungroup() %>% 
   arrange(type,concurrent_user) %>%
   ggplot(.,aes(x=concurrent_user,y=percent,fill=key)) +
   geom_bar(stat="identity") + 
-  facet_grid(.~type) + theme_bw()
+  facet_grid(func~type) + theme_bw()
 
 ggplotly(p)
 

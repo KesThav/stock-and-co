@@ -22,6 +22,10 @@ const myLogger = new console.Console({
   stderr: fs.createWriteStream("errStdErr.txt"),
 });
 
+async function sleep(milli_seconds = 5000) {
+  return new Promise((done) => setTimeout(() => done(), milli_seconds));
+}
+
 export const app = express();
 
 const corsOptions = {
