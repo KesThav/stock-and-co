@@ -17,7 +17,6 @@ import moment from "moment";
 import PendingOrders from "./pages/pendingorders";
 import ProtectedRoute from "./middlewares/ProtectedRoute";
 import AdminRoute from "./middlewares/AdminRoute";
-import Benchmark from "./pages/benchmark";
 
 var userData;
 const token = localStorage.getItem("token");
@@ -224,14 +223,6 @@ function App() {
                       <PendingOrders />
                     </Layout>
                   </AdminRoute>
-                }
-              />
-              <Route
-                path="/benchmark"
-                element={
-                  <Layout d={false}>
-                    <Benchmark />
-                  </Layout>
                 }
               />
             </Routes>
