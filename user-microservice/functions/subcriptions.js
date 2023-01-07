@@ -46,7 +46,9 @@ export const subscriptions = (client) => {
         "info",
         `Payment with card | ${orderid} | Step 1 | User ${order.userid} card is accepted.`
       );
-      await taskService.complete(task);
+      const localVariable = new Variables();
+      localVariable.set("validity", true);
+      await taskService.complete(task, localVariable);
     } catch (err) {
       console.log("error", `Payment with card | ${err}`);
     }

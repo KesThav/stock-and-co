@@ -16,16 +16,23 @@ const MyStepper = ({ order, logs }) => {
       : allSteps.includes("Step 4")
       ? 3
       : allSteps.includes("Step 3")
-      ? 2
+      ? 3
       : allSteps.includes("Step 2")
       ? 2
       : allSteps.includes("Step 1")
+      ? 1
+      : allSteps.includes("Step 0")
       ? 1
       : 0;
   }
   const steps =
     order.type === "Point"
-      ? ["Payment received", "Order created", "Order shipped"]
+      ? [
+          `Discount of CHF ${order.discount} applied`,
+          "Payment received",
+          "Order created",
+          "Order shipped",
+        ]
       : [
           "Payment received",
           "Order created",

@@ -84,6 +84,14 @@ const Logs = () => {
             <strong>Step 5</strong>
           </span>
         );
+      case "Step 0":
+        return (
+          <span
+            style={{ background: "#e0e0e0", color: "#616161", padding: "3px" }}
+          >
+            <strong>Step 0</strong>
+          </span>
+        );
       default:
         return;
     }

@@ -35,6 +35,7 @@ const Profile = () => {
           orderid
           type
           total
+          discount
           createdAt
         }
       }`,

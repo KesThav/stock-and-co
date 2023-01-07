@@ -91,24 +91,23 @@ const Shopping = () => {
                 bgcolor: "#FAFAFB",
               }}
             >
-              <Typography variant="h6" sx={{ mb: 3 }}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
                 <strong>Order summary</strong>
               </Typography>
-              <Divider sx={{ mt: 1 }} />
-
               <Box
                 sx={{
                   width: "100%",
                   display: "flex",
                   justifyContent: "right",
+                  mt: 0,
                   mb: 1,
                   pl: 1,
                   pr: 2,
                 }}
               >
-                {userData && (
+                {userData && points > 0 && (
                   <Chip
-                    label={`Points left: ${points}`}
+                    label={`Points left: ${points - discount}`}
                     variant="outlined"
                     color="primary"
                   />
@@ -125,7 +124,7 @@ const Shopping = () => {
               </Box>
 
               <Box sx={{ display: "flex", width: "100%", pl: 1, pr: 2 }}>
-                {userData && (
+                {userData && points > 0 && (
                   <>
                     <TextField
                       placeholder="discount"
@@ -138,7 +137,10 @@ const Shopping = () => {
                       variant="contained"
                       color="inherit"
                       onClick={() => setDiscount(inputRef.current.value)}
-                      disabled={inputValue > points}
+                      disabled={
+                        inputValue > points ||
+                        inputValue > mapShoppingCard(basket)[1]
+                      }
                       sx={{ ml: 1 }}
                     >
                       Apply
@@ -146,7 +148,7 @@ const Shopping = () => {
                   </>
                 )}
               </Box>
-              <Divider sx={{ mt: 1 }} />
+              <Divider sx={{ mt: 3 }} />
               <Box sx={{ width: "100%", pl: 1, pr: 2 }}>
                 {basket &&
                   basket.length > 0 &&
@@ -162,7 +164,6 @@ const Shopping = () => {
                   ))}
                 <Box
                   sx={{
-                    mt: 1,
                     display: "flex",
                     justifyContent: "space-between",
                   }}

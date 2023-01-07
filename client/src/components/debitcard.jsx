@@ -41,20 +41,22 @@ const Debitcard = ({ data }) => {
             justifyContent: "center",
           }}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
               placeholder="Full name"
               type="text"
               name="CCname"
+              sx={{ mb: 1 }}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
               placeholder="Card number"
               type="text"
               name="CCnumber"
+              sx={{ mb: 1 }}
             />
           </Grid>
           <Grid item xs={6}>
@@ -63,10 +65,17 @@ const Debitcard = ({ data }) => {
               placeholder="MM/YY"
               type="text"
               name="CCexpiry"
+              sx={{ mb: 1, mr: "1px" }}
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField fullWidth placeholder="CVC" type="text" name="CCcvc" />
+            <TextField
+              fullWidth
+              placeholder="CVC"
+              type="text"
+              name="CCcvc"
+              sx={{ mb: 1, ml: "1px" }}
+            />
           </Grid>
         </Grid>
       </CardReactFormContainer>

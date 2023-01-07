@@ -41,6 +41,10 @@ const theme = createTheme({
     primary: {
       main: "#116A57",
     },
+    success: {
+      main: "#ffcc00",
+      dark: "#ffcc00",
+    },
   },
   shadows: Array(25).fill("none"),
 });

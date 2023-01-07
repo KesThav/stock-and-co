@@ -20,6 +20,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { useEffect } from "react";
 import Debitcard from "./debitcard";
+import Grid from "@mui/material/Grid";
 
 const Confirmpayment = ({ total, discount }) => {
   const navigate = useNavigate();
@@ -133,50 +134,68 @@ const Confirmpayment = ({ total, discount }) => {
         {!userData ? "Please login to continue" : "Confirm order"}
       </Button>
       <Dialog
-        fullScreen={fullScreen}
+        fullScreen
         open={open}
         onClose={handleClose}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {"Confirm your payment method"}
-        </DialogTitle>
         <DialogContent>
           <Box
             sx={{
               display: "flex",
+              width: "100%",
+              height: "100%",
+              justifyContent: "center",
               alignItems: "center",
-              mb: 2,
             }}
           >
-            <Divider />
+            <Box
+              sx={{
+                boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+                width: "600px",
+              }}
+            >
+              <Box
+                sx={{
+                  bgcolor: "#ffcc00",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Typography sx={{ mb: 2, mt: 2 }}>
+                  {"MyBank: Confirm your payment"}
+                </Typography>
+              </Box>
+              <Box sx={{ p: 2 }}>
+                <Debitcard data={creditCard} />
+                <Button
+                  variant="contained"
+                  onClick={() => startPayment(paymentType)}
+                  autoFocus
+                  color="success"
+                  sx={{ mb: 1, mt: 3 }}
+                  fullWidth
+                >
+                  Validate payment
+                </Button>
+                <Button
+                  variant="outlined"
+                  autoFocus
+                  onClick={handleClose}
+                  color="success"
+                  fullWidth
+                >
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
           </Box>
-          <Debitcard data={creditCard} />
         </DialogContent>
-        <DialogActions
-          sx={{
-            display: "flex",
-            width: "100%",
-            marginBottom: "10px",
-          }}
-        >
-          <Button
-            variant="outlined"
-            color="primary"
-            autoFocus
-            onClick={handleClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => startPayment(paymentType)}
-            autoFocus
-            sx={{ mr: 2 }}
-          >
-            Validate payment
-          </Button>
-        </DialogActions>
       </Dialog>
     </div>
   );
