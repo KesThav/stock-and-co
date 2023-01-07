@@ -21,14 +21,13 @@ import Divider from "@mui/material/Divider";
 import { useEffect } from "react";
 import Debitcard from "./debitcard";
 
-const Confirmpayment = ({ total }) => {
+const Confirmpayment = ({ total, discount }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const { userData, basket } = useContext(ContextAPI);
   const [paymentType, setPaymentType] = useState("Card");
-  const [points, setPoints] = useState(0);
   const [creditCard, setCreditCard] = useState({
     name: "",
     cardNumber: "",
@@ -62,8 +61,8 @@ const Confirmpayment = ({ total }) => {
       productid: b.productid,
     }));
     const paymentMutation = {
-      query: `mutation startOrderInstance($userid: String, $order : OrderInput, $ptype : String,$orderid: String) {
-      startOrder(userid:$userid, order: $order, ptype: $ptype, orderid: $orderid){
+      query: `mutation startOrderInstance($userid: String, $order : OrderInput, $ptype : String,$orderid: String,$discount: Int) {
+      startOrder(userid:$userid, order: $order, ptype: $ptype, orderid: $orderid,discount: $discount){
         message
       }
     }`,
@@ -71,7 +70,8 @@ const Confirmpayment = ({ total }) => {
         userid: userData._id,
         orderid: orderid,
         order: { products: products, userid: userData._id, orderid: orderid },
-        ptype: paymentType,
+        ptype: discount > 0 ? "Point" : "Card",
+        discount: +discount,
       },
     };
 
@@ -101,41 +101,6 @@ const Confirmpayment = ({ total }) => {
   const handleChange = (event) => {
     setPaymentType(event.target.value);
   };
-
-  const getQueryPoint = () => {
-    const queryPoints = {
-      query: `query getUserPoints($id: String) {
-          user(_id:$id){
-            points
-        }
-    }`,
-      variables: { id: userData._id },
-    };
-
-    const headers = {
-      "content-type": "application/json",
-    };
-
-    axios({
-      url: process.env.REACT_APP_base_url,
-      method: "post",
-      headers: headers,
-      data: queryPoints,
-    })
-      .then((response) => {
-        if (response.data.errors) {
-          throw new Error(response.data.errors[0].message);
-        } else {
-          setPoints(response.data.data.user.points);
-          return response.data.data.user.points;
-        }
-      })
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
-    getQueryPoint();
-  }, []);
 
   const StyledFormControlLabel = styled((props) => (
     <FormControlLabel {...props} />
@@ -184,35 +149,9 @@ const Confirmpayment = ({ total }) => {
               mb: 2,
             }}
           >
-            <Typography sx={{ mr: 2 }}>Payment method :</Typography>
-            <RadioGroup
-              name="use-radio-group"
-              defaultValue="Card"
-              sx={{ display: "flex", flexDirection: "row" }}
-            >
-              <MyFormControlLabel
-                value="Card"
-                label="With card"
-                control={<Radio />}
-                onChange={handleChange}
-              />
-              <MyFormControlLabel
-                value="Point"
-                label="With points"
-                control={<Radio />}
-                onChange={handleChange}
-              />
-            </RadioGroup>
             <Divider />
           </Box>
-          {paymentType === "Card" && <Debitcard data={creditCard} />}
-          <Box style={{ color: points < total ? "#ff6a57" : "#0C6A57" }}>
-            {paymentType === "Point" && points < total
-              ? `Not enough points. Only ${points} Left.`
-              : paymentType === "Point" && points > total
-              ? `${points} points Left.`
-              : null}
-          </Box>
+          <Debitcard data={creditCard} />
         </DialogContent>
         <DialogActions
           sx={{
@@ -234,7 +173,6 @@ const Confirmpayment = ({ total }) => {
             onClick={() => startPayment(paymentType)}
             autoFocus
             sx={{ mr: 2 }}
-            disabled={paymentType === "Point" && points < total}
           >
             Validate payment
           </Button>

@@ -16,6 +16,7 @@ export const subscriptions = (client) => {
       );
       order.status = "Paid";
       order.type = task.variables.get("ptype");
+      order.discount = task.variables.get("discount");
       const newOrder = await createOrder(order);
       const localVariable = new Variables();
       localVariable.set("order", newOrder);

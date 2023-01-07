@@ -16,9 +16,9 @@ const escapeJSON = (obj) => {
 };
 
 export const startInstance = async (data) => {
-  const { userid, order, ptype, orderid } = data;
+  const { userid, order, ptype, orderid, discount } = data;
 
-  if (!userid || !order || !ptype || !orderid) {
+  if (!userid || !order || !ptype || !orderid || discount == null) {
     throw new Error("Missing data !");
   }
 
@@ -42,6 +42,9 @@ export const startInstance = async (data) => {
           value: escapeJSON(order),
           type: "json",
         },
+        discount: {
+          value: discount,
+        },
       },
     };
 
@@ -54,10 +57,6 @@ export const startInstance = async (data) => {
       variables,
       headers
     );
-    if (response.data.errors) {
-      throw new Error(response.data.errors[0].message);
-    }
-    console.log(response.data);
     logs.log("info", `Order instance started.`);
   } catch (err) {
     logs.log("error", `Error when starting order instance : ${err}`);

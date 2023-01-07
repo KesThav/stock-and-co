@@ -115,6 +115,7 @@ export const load_orders = async () => {
           total: amount,
           status: "Closed",
           type: "Card",
+          discount: 0,
         };
 
         const data_camunda = {
@@ -122,14 +123,15 @@ export const load_orders = async () => {
           orderid: myorder.orderid,
           ptype: "Card",
           order: myorder,
+          discount: 0,
         };
 
         //orderlist.push(data_camunda);
-        await createOrder(myorder);
+        //await createOrder(myorder);
         console.log("Order " + order + " loaded !");
         order++;
-        //await startInstance(data_camunda);
-        //await sleep(1000);
+        await startInstance(data_camunda);
+        await sleep(1000);
       }
     }
     console.log("Orders loaded !");

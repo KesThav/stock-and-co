@@ -107,3 +107,13 @@ ggplotly(p1)
 p2 = copy_df_s_f %>% mutate(requests = as.factor(requests)) %>% ggplot(data=.) + geom_boxplot(aes(x=requests,y=time,color=type)) + facet_wrap(func~.,scales="free_y") + theme_bw() 
 
 ggplotly(p2)
+
+####################
+
+tmp = read.csv("D:/Uni/Travail de master/apache-jmeter-5.5/a transferer/results_productBoughtByUser_graphql_10000.csv",header=T)
+
+tmp2 = read.csv("D:/Uni/Travail de master/apache-jmeter-5.5/a transferer/results_productBoughtByUser_rest_10000.csv",header=T)
+
+tmp["type"] = "GraphQL"
+tmp2["type"] = "REST"
+data= rbind(tmp,tmp2)

@@ -11,7 +11,7 @@ export const subscriptions = (client) => {
       const orderid = task.variables.get("orderid");
       logs.log(
         "info",
-        `Payment with point | ${orderid} | Step 1 | Reading User ${order.userid} points.`
+        `Payment with point | ${orderid} | Step 0 | Reading User ${order.userid} points.`
       );
       let oneUser = await User.findOne({ _id: order.userid });
       const localVariable = new Variables();
@@ -19,26 +19,15 @@ export const subscriptions = (client) => {
         (total, prod) => total + prod.price * prod.quantity,
         0
       );
-      if (oneUser.points >= amount) {
-        localVariable.set("enough_point", true);
-        localVariable.set("total", amount);
-        logs.log(
-          "info",
-          `Payment with point | ${orderid} | Step 1 | User ${oneUser._id} has enough point.`,
-          {
-            user: order.userid,
-          }
-        );
-        await taskService.complete(task, localVariable);
-      } else {
-        localVariable.set("enough_point", false);
-        logs.log(
-          "info",
-          `Payment with point | ${orderid} | Step 1 | User ${oneUser._id} don't have enough point. Process ends.`,
-          { user: order.userid }
-        );
-        await taskService.complete(task, localVariable);
-      }
+      localVariable.set("total", amount);
+      logs.log(
+        "info",
+        `Payment with point | ${orderid} | Step 0 | User ${oneUser._id} discount has been applied.`,
+        {
+          user: order.userid,
+        }
+      );
+      await taskService.complete(task, localVariable);
     } catch (err) {
       console.log("error", `Payment with point | ${err}`);
     }
@@ -74,7 +63,7 @@ export const subscriptions = (client) => {
       );
       const oneUser = await User.findOne({ _id: order.userid });
       if (oneUser && ptype == "Point") {
-        oneUser.points -= task.variables.get("total");
+        oneUser.points -= task.variables.get("discount");
         await oneUser.save();
       }
       logs.log(

@@ -33,6 +33,7 @@ export const createOrder = async (data) => {
   newOrder.products = Array.from(data.products);
   newOrder.status = data.status;
   newOrder.type = data.type;
+  newOrder.discount = data.discount;
 
   newOrder = new Order(newOrder);
 
