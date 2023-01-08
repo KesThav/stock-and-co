@@ -1,0 +1,285 @@
+---
+title: "Themed dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    theme:
+      bg: "#fafafa"
+      fg: "#111111" 
+      primary: "#116A57"
+      base_font:
+        google: Prompt
+      code_font:
+        google: JetBrains Mono
+    orientation: rows
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(jsonlite)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(tidyr)
+library(data.table)
+library(zoo)
+library(kableExtra)
+library(collapse)
+library(data.table)
+library(stringr)
+
+#disable scientific notation
+options(scipen=999)
+```
+
+```{r include=FALSE}
+#prepare sequential benchmark data
+#there are two categories: few_data and more_data
+df_s = data.frame()
+
+files = c("few_data/sequential_createProduct_GraphQL",
+          "few_data/sequential_createProduct_REST",
+          "few_data/sequential_userThatBoughtProduct_GraphQL",
+          "few_data/sequential_userThatBoughtProduct_REST",
+          "few_data/sequential_getUsers_REST",
+          "few_data/sequential_getUsers_GraphQL",
+          "lotof_data/sequential_createProduct_GraphQL",
+          "lotof_data/sequential_createProduct_REST",
+          "lotof_data/sequential_userThatBoughtProduct_GraphQL",
+          "lotof_data/sequential_userThatBoughtProduct_REST",
+          "lotof_data/sequential_getUsers_REST",
+          "lotof_data/sequential_getUsers_GraphQL")
+
+#load data and rbind everything
+for(file in files){
+  data <- fromJSON(paste0("sequential/",file,".json"))
+  data <- data.table::rbindlist(list(data), fill = TRUE) %>% as.data.frame()
+  data['type'] = file
+  df_s = dplyr::bind_rows(df_s,data)
+}
+
+rm(data)
+
+#split the file name and create new columns
+df_s <- df_s %>% select(!starts_with('errors')) %>%
+  tidyr::separate(data = .,col = type,sep = "_",into = c("category","to_remove","func","type"),remove = FALSE) %>%
+  select(-c("to_remove")) %>%
+  tidyr::gather("requests","time",1:5) %>%
+  mutate(requests = as.integer(requests)) %>%
+  mutate(time = time/1000)
+
+#create copy 
+copy_df_s = df_s
+```
+
+Sequential Benchmark
+=====================================================================
+
+Row
+-------------------------------
+### About the sequential Benchmark
+The sequential benchmark was done in order to compare the response time of REST and GraphQL.
+The test was done on two types of sample. \
+
+The *few* sample contains : \
+- 10 users
+- 84 products
+- 79 orders \
+
+The *lotof* sample contains : \
+- 100'000 users
+- 84 products
+- 300204 orders  \
+
+We simulate a user doing n requests where n = {1,10,100,1000,10000} on three functions:\
+- getUsers (only user-microservice is involved). \
+- createProduct (only product-microservice is involved). \
+- userThatBoughtProduct (user, product and order microservices are involved).
+
+Row
+---------------------------------------------
+### Result sample size per category, function and type 
+
+```{r, echo=FALSE}
+df_s %>%
+  group_by(category,func,type,requests) %>%
+  summarise(n = sum(!is.na(time))) %>%
+  rename(n_run = n) %>% 
+  ungroup() %>%
+  spread(requests, n_run) %>% 
+  kbl() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+### Response time for getUsers and createProduct for each sample size
+
+```{r, echo=FALSE}
+
+tmp_df <- expand.grid(category=unique(df_s$category),func=unique(df_s$func),type=unique(df_s$type),requests=seq(1:10000))
+
+df_s = tmp_df %>% 
+  left_join(df_s %>%
+              group_by(category,func,type,requests) %>%
+              summarise(mean_time = mean(time,na.rm=T),
+                        median_time = median(time,na.rm=T),
+                        max_time = fmax(time,na.rm=T),
+                        min_time = fmin(time,na.rm=T)) %>%
+              ungroup() ,by=c("category","func","type","requests")) %>%
+  mutate(mean_time = ifelse(is.na(mean_time), NA, mean_time)) %>%
+  mutate(mean_time = ifelse(is.nan(mean_time), NA, mean_time)) %>%
+  mutate(median_time = ifelse(is.na(median_time), NA, median_time)) %>%
+  mutate(median_time = ifelse(is.nan(median_time), NA, median_time)) %>%
+  mutate(max_time = ifelse(is.na(max_time), NA, max_time)) %>%
+  mutate(max_time = ifelse(is.nan(max_time), NA, max_time)) %>%
+  mutate(min_time = ifelse(is.na(min_time), NA, min_time)) %>%
+  mutate(min_time = ifelse(is.nan(min_time), NA, min_time))
+
+df_s = df_s %>% 
+  group_by(category,func,type) %>% 
+  arrange(category,func,type,requests) %>% 
+  mutate(mean_time = na.spline(mean_time),
+         median_time = na.spline(median_time),
+         max_time = na.spline(max_time),
+         min_time = na.spline(min_time)) %>%
+  ungroup()
+
+plot_df_s = df_s %>% filter(func != "userThatBoughtProduct")
+
+p1 = ggplot(plot_df_s,aes(x=requests,y=mean_time,color=type)) + geom_line()  + facet_wrap(category~func,scales="free_y") + theme_bw()   
+
+ggplotly(p1) %>% layout(hovermode = "x unified")
+
+```
+
+Row
+-------------------------------
+### Response time for getUsers and createProduct for each sample size (boxplot)
+```{r, echo=FALSE}
+p2 = copy_df_s %>% mutate(requests = as.factor(requests)) %>% ggplot(data=.) + geom_boxplot(aes(x=requests,y=time,color=type)) + facet_wrap(category~func,scales="free_y") + theme_bw() 
+
+ggplotly(p2)
+```
+
+
+Concurrent benchmark (autocannon)
+=====================================================================
+
+Concurrent benchmark (JMeter)
+=====================================================================
+
+A concurrency benchmark was done with JMeter to test server performance and response time. The sample used is the *few* sample one. The test has not been done with the *lotof* sample because response times are too high.
+
+```{r, include=FALSE}
+path = "D:/Uni/Travail de master/apache-jmeter-5.5/a transferer/" #change this line to match your path
+files = c("addProduct_graphql",
+          "addProduct_rest",
+          "getUsers_graphql",
+          "getUsers_rest",
+          "productBoughtByUser_graphql",
+          "productBoughtByUser_rest")
+
+df_jm = data.frame()
+
+for(file in files) {
+  data = read.csv(paste0(path,"results_",file,"_10000.csv"),header = T)
+  data["type"] = file
+  df_jm = rbind(df_jm,data)
+}
+
+df_jm = df_jm %>%
+  mutate(success = ifelse(success == "true", "success","failure"))
+
+df_jm = df_jm %>% 
+  mutate(timeStamp =  as.POSIXct(timeStamp / 1000, origin = "1970-01-01"))
+
+df_jm %>% 
+
+rm(data)
+```
+
+Row
+---------------------------
+
+### Distribution of success and failure per function
+
+```{r, echo=FALSE}
+df_jm %>% 
+  group_by(type,success) %>%
+  count() %>%
+  spread(success,n) %>%
+  tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
+  select(func,type,success,failure) %>%
+  mutate(`success percent (%)` = round(success / (success + failure)*100,digits = 2)) %>%
+  kbl() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+  
+
+```
+
+### Distribution of response time per thread, functions and type
+
+```{r echo=FALSE}
+
+a = df_jm %>%
+  filter(success == "success") %>%
+  group_by(type,grpThreads) %>%
+  summarise(mean = mean(elapsed,na.rm=T),
+            median = median(elapsed,na.rm=T)) %>%
+  ungroup() %>%
+  tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
+  rename(Threads = grpThreads)
+
+ggplotly(ggplot(a,aes(x=Threads,y=mean/1000,color=type)) +
+  geom_point() +
+  facet_grid(.~func) + theme_bw()+ ylab("Response time (second)")) 
+  
+```
+
+### Response time over time
+
+```{r,echo=FALSE}
+
+ggplotly(df_jm %>% 
+           filter(success == "success") %>%
+           group_by(type) %>% 
+           arrange(timeStamp) %>% 
+           mutate(difference = as.integer(difftime(timeStamp,first(timeStamp),units="secs"))) %>%
+           mutate(interval = cut(difference,seq(0, max(difference)+10, 60),dig.lab=10)) %>%
+           ungroup() %>%
+           group_by(type,interval) %>% 
+           summarise(response = mean(elapsed/100,na.rm=T),n=n()) %>%
+           ungroup() %>%
+           mutate(lower_bound = str_match(as.character(interval),"(?<=\\()(.*)(?=,)")[,2]) %>%
+           filter(!is.na(lower_bound)) %>% 
+           mutate(lower_bound = as.integer(lower_bound)) %>%
+           tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
+           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_wrap(func~.) + theme_bw())
+  
+  
+  
+
+
+```
+
+```{r, echo=FALSE}
+
+ggplotly(df_jm %>% 
+           filter(success == "success") %>%
+           group_by(type) %>% 
+           arrange(timeStamp) %>% 
+           mutate(difference = as.integer(difftime(timeStamp,first(timeStamp),units="secs"))) %>%
+           mutate(interval = cut(difference,seq(0, max(difference)+10, 60),dig.lab=10)) %>%
+           ungroup() %>%
+           mutate(interval_threads = cut(grpThreads,seq(0,max(grpThreads) + 10,2000),dig.lab=10)) %>%
+           group_by(type,interval,interval_threads) %>% 
+           summarise(response = mean(elapsed/100,na.rm=T),n=n()) %>%
+           ungroup() %>%
+           mutate(lower_bound = str_match(as.character(interval),"(?<=\\()(.*)(?=,)")[,2]) %>%
+           mutate(lower_bound_threads = str_match(as.character(interval_threads),"(?<=\\()(.*)(?=,)")[,2]) %>%
+           filter(!is.na(lower_bound),!is.na(lower_bound_threads)) %>% 
+           mutate(lower_bound = as.integer(lower_bound)) %>%
+           mutate(lower_bound_threads = as.integer(lower_bound_threads)) %>%
+           tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
+           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_grid(func~lower_bound_threads) + theme_bw())
+```
+
