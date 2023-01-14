@@ -6,10 +6,6 @@ output:
       bg: "#fafafa"
       fg: "#111111" 
       primary: "#116A57"
-      base_font:
-        google: Prompt
-      code_font:
-        google: JetBrains Mono
     orientation: rows
     vertical_layout: scroll
 ---
@@ -43,12 +39,12 @@ files = c("few_data/sequential_createProduct_GraphQL",
           "few_data/sequential_userThatBoughtProduct_REST",
           "few_data/sequential_getUsers_REST",
           "few_data/sequential_getUsers_GraphQL",
-          "lotof_data/sequential_createProduct_GraphQL",
-          "lotof_data/sequential_createProduct_REST",
-          "lotof_data/sequential_userThatBoughtProduct_GraphQL",
-          "lotof_data/sequential_userThatBoughtProduct_REST",
-          "lotof_data/sequential_getUsers_REST",
-          "lotof_data/sequential_getUsers_GraphQL")
+          "lot_data/sequential_createProduct_GraphQL",
+          "lot_data/sequential_createProduct_REST",
+          "lot_data/sequential_userThatBoughtProduct_GraphQL",
+          "lot_data/sequential_userThatBoughtProduct_REST",
+          "lot_data/sequential_getUsers_REST",
+          "lot_data/sequential_getUsers_GraphQL")
 
 #load data and rbind everything
 for(file in files){
@@ -117,14 +113,21 @@ df_s %>%
 
 tmp_df <- expand.grid(category=unique(df_s$category),func=unique(df_s$func),type=unique(df_s$type),requests=seq(1:10000))
 
+df_s = df_s %>%
+  group_by(category,func,type,requests) %>%
+  summarise(mean_time = mean(time,na.rm=T),
+            median_time = median(time,na.rm=T),
+            max_time = fmax(time,na.rm=T),
+            min_time = fmin(time,na.rm=T)) %>%
+  mutate(mean_time = ifelse(is.na(mean_time) | is.nan(mean_time), lag(mean_time)*10 ,mean_time),
+         median_time = ifelse(is.na(median_time) | is.nan(median_time), lag(median_time)*10 ,median_time),
+         max_time = ifelse(is.na(max_time) | is.nan(max_time), lag(max_time)*10 ,max_time),
+         min_time = ifelse(is.na(min_time) | is.nan(min_time), lag(min_time)*10 ,min_time)
+           ) %>%
+  ungroup() 
+
 df_s = tmp_df %>% 
-  left_join(df_s %>%
-              group_by(category,func,type,requests) %>%
-              summarise(mean_time = mean(time,na.rm=T),
-                        median_time = median(time,na.rm=T),
-                        max_time = fmax(time,na.rm=T),
-                        min_time = fmin(time,na.rm=T)) %>%
-              ungroup() ,by=c("category","func","type","requests")) %>%
+  left_join(df_s,by=c("category","func","type","requests")) %>%
   mutate(mean_time = ifelse(is.na(mean_time), NA, mean_time)) %>%
   mutate(mean_time = ifelse(is.nan(mean_time), NA, mean_time)) %>%
   mutate(median_time = ifelse(is.na(median_time), NA, median_time)) %>%
@@ -133,6 +136,8 @@ df_s = tmp_df %>%
   mutate(max_time = ifelse(is.nan(max_time), NA, max_time)) %>%
   mutate(min_time = ifelse(is.na(min_time), NA, min_time)) %>%
   mutate(min_time = ifelse(is.nan(min_time), NA, min_time))
+
+
 
 df_s = df_s %>% 
   group_by(category,func,type) %>% 
@@ -143,11 +148,13 @@ df_s = df_s %>%
          min_time = na.spline(min_time)) %>%
   ungroup()
 
-plot_df_s = df_s %>% filter(func != "userThatBoughtProduct")
+df_s = df_s %>% mutate(func = ifelse(func == "createProduct", "addProduct",
+                       ifelse(func == "userThatBoughtProduct", "products-users",func)))
 
-p1 = ggplot(plot_df_s,aes(x=requests,y=mean_time,color=type)) + geom_line()  + facet_wrap(category~func,scales="free_y") + theme_bw()   
 
-ggplotly(p1) %>% layout(hovermode = "x unified")
+p1 = ggplot(df_s %>% mutate(both = paste0(category, " - ", func)),aes(x=requests,y=mean_time,color=type)) + geom_line()  + facet_wrap(both~.,scales="free_y") + theme_bw() + ylab("Response time (second)") + xlab("Number of request")   
+
+ggplotly(p1,width = 1000,height=500) %>% layout(hovermode = "x unified")
 
 ```
 
@@ -163,6 +170,73 @@ ggplotly(p2)
 
 Concurrent benchmark (autocannon)
 =====================================================================
+```{r include=FALSE}
+df_c <- data.frame()
+
+files = c("concurrent_createProduct_GraphQL",
+         "concurrent_createProduct_REST",
+         "concurrent_getProductBoughtByUser_GraphQL",
+         "concurrent_getProductBoughtByUser_REST",
+         "concurrent_getUsers_REST",
+         "concurrent_getUsers_GraphQL")
+
+
+
+for(file in files){
+  print(file)
+  data <- fromJSON(paste0("concurrent/",file,".json"))
+  data <- bind_rows(data, .id = 'concurrent_user')
+  data['type'] = file
+  df_c = rbind(df_c,data)
+}
+
+rm(data)
+df_c = do.call(data.frame,df_c)
+
+df_c = df_c %>% tidyr::separate(data = .,col = type,sep = "_",into = c("to_remove","func","type"),remove = FALSE) %>%
+  select(-c("to_remove")) %>%
+  mutate(func = ifelse(func == "createProduct", "addProduct", 
+                       ifelse(func == "getProductBoughtByUser", "products-users", func)))
+```
+
+```{r, echo=FALSE}
+#compute the percentage of success, errors and timeout for each concurrent user (1,10,100,1000,10000)
+p = df_c %>% select("type","func","concurrent_user","X2xx","errors","timeouts") %>%
+  group_by(type,func,concurrent_user) %>%
+  summarise(X2xx = sum(X2xx),
+            errors = sum(errors) + sum(timeouts)) %>%
+  ungroup() %>%
+  gather("key", "value",4:5) %>%
+  group_by(type, func,concurrent_user) %>%
+  mutate(percent = round(value / sum(value) * 100,digits = 2)) %>%
+  ungroup() %>% 
+  arrange(type,concurrent_user) %>%
+  mutate(key = ifelse(key == "X2xx", "success","failure")) %>%
+  ggplot(.,aes(x=concurrent_user,y=percent,fill=key)) +
+  geom_bar(stat="identity") + 
+  facet_grid(func~type) + theme_bw() + xlab("Concurrent user") + ylab("Percent")
+
+ggplotly(p,width = 1000,height=500)
+```
+
+```{r, echo=FALSE}
+
+b = df_c %>% 
+  filter(errors == 0) %>% 
+  group_by(type,func, concurrent_user) %>% 
+  filter(requests.sent == max(requests.sent)) %>%
+  ungroup() %>%
+  select(type, func, concurrent_user, requests.sent, latency.average, latency.max, latency.min, throughput.average, throughput.max, throughput.min,latency.stddev) %>%
+  mutate(latency.average = latency.average/1000,
+         latency.stddev = latency.stddev / 1000,
+         latency.max = latency.max / 1000,
+         latency.min = latency.min / 1000)
+
+tmp = b %>% ggplot(.,aes(concurrent_user,y=latency.average,fill=type)) + geom_bar(stat="identity",position="dodge") + facet_wrap(func~.) + geom_errorbar(aes(ymin=latency.average-latency.stddev, ymax=latency.average+latency.stddev), width=.2,
+                 position=position_dodge(.9)) + theme_bw() + xlab("Concurrent user") + ylab("Response time (second)")
+
+ggplotly(tmp,width = 1000,height=500)
+```
 
 Concurrent benchmark (JMeter)
 =====================================================================
@@ -227,13 +301,18 @@ a = df_jm %>%
             median = median(elapsed,na.rm=T)) %>%
   ungroup() %>%
   tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
-  rename(Threads = grpThreads)
+  rename(Threads = grpThreads) %>%
+  mutate(func = ifelse(func == "createProduct", "addProduct",
+                       ifelse(func == "productBoughtByUser", "products-users",func)))
 
 ggplotly(ggplot(a,aes(x=Threads,y=mean/1000,color=type)) +
   geom_point() +
-  facet_grid(.~func) + theme_bw()+ ylab("Response time (second)")) 
+  facet_grid(.~func) + theme_bw()+ ylab("Response time (second)"),width = 1000,height=500) 
   
 ```
+
+Row
+---------------------------
 
 ### Response time over time
 
@@ -247,19 +326,23 @@ ggplotly(df_jm %>%
            mutate(interval = cut(difference,seq(0, max(difference)+10, 60),dig.lab=10)) %>%
            ungroup() %>%
            group_by(type,interval) %>% 
-           summarise(response = mean(elapsed/100,na.rm=T),n=n()) %>%
+           summarise(response = mean(elapsed/1000,na.rm=T),n=n()) %>%
            ungroup() %>%
            mutate(lower_bound = str_match(as.character(interval),"(?<=\\()(.*)(?=,)")[,2]) %>%
            filter(!is.na(lower_bound)) %>% 
            mutate(lower_bound = as.integer(lower_bound)) %>%
            tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
-           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_wrap(func~.) + theme_bw())
+           mutate(func = ifelse(func == "createProduct", "addProduct",
+                       ifelse(func == "productBoughtByUser", "products-users",func))) %>%
+           ggplot(.)  + geom_line(aes(x=lower_bound/60,y=response,color=type)) + facet_wrap(func~.) + theme_bw() + xlab("Time (minute)") + ylab("Response time (second)"),width = 1000,height=500)
   
   
   
 
 
 ```
+
+### Response time over time by threadsGroup
 
 ```{r, echo=FALSE}
 
@@ -270,9 +353,9 @@ ggplotly(df_jm %>%
            mutate(difference = as.integer(difftime(timeStamp,first(timeStamp),units="secs"))) %>%
            mutate(interval = cut(difference,seq(0, max(difference)+10, 60),dig.lab=10)) %>%
            ungroup() %>%
-           mutate(interval_threads = cut(grpThreads,seq(0,max(grpThreads) + 10,2000),dig.lab=10)) %>%
+           mutate(interval_threads = cut(grpThreads,seq(0,max(grpThreads) + 10,1000),dig.lab=10)) %>%
            group_by(type,interval,interval_threads) %>% 
-           summarise(response = mean(elapsed/100,na.rm=T),n=n()) %>%
+           summarise(response = mean(elapsed/1000,na.rm=T),n=n()) %>%
            ungroup() %>%
            mutate(lower_bound = str_match(as.character(interval),"(?<=\\()(.*)(?=,)")[,2]) %>%
            mutate(lower_bound_threads = str_match(as.character(interval_threads),"(?<=\\()(.*)(?=,)")[,2]) %>%
@@ -280,6 +363,27 @@ ggplotly(df_jm %>%
            mutate(lower_bound = as.integer(lower_bound)) %>%
            mutate(lower_bound_threads = as.integer(lower_bound_threads)) %>%
            tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
-           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_grid(func~lower_bound_threads) + theme_bw())
+           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_grid(func~lower_bound_threads) + theme_bw(),width = 1000,height=500)
 ```
 
+Row
+----------------------
+
+### Distribution of response time per sentBytes, function and type
+
+```{r echo=FALSE}
+
+a = df_jm %>%
+  #filter(success == "success") %>%
+  group_by(type,grpThreads) %>%
+  summarise(mean = mean(sentBytes)) %>%
+  ungroup() %>% 
+  tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
+  mutate(func = ifelse(func == "createProduct", "addProduct",
+                       ifelse(func == "productBoughtByUser", "products-users",func))) 
+
+ggplotly(ggplot(a,aes(x=grpThreads,y=mean,color=type)) +
+  geom_point() +
+  facet_grid(.~func) + theme_bw()+ ylab("Response time (second)"),width = 1000,height=500) 
+  
+```

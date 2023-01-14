@@ -126,7 +126,6 @@ export const load_orders = async () => {
           discount: 0,
         };
 
-        //orderlist.push(data_camunda);
         //await createOrder(myorder);
         console.log("Order " + order + " loaded !");
         order++;

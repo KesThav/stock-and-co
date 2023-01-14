@@ -54,7 +54,7 @@ app.post("/benchmarks/sequential/product", async (req, res) => {
   res.send(product);
 });
 
-app.get("/benchmarks/sequential/products-users", async (req, res) => {
+app.get("/benchmarks/sequential/products/users", async (req, res) => {
   const products = await sequential_getProductBoughtByUser_REST();
   res.send(products);
 });
@@ -69,7 +69,7 @@ app.get("/benchmarks/concurrent/users", async (req, res) => {
   res.send(users);
 });
 
-app.get("/benchmarks/concurrrent/products-users", async (req, res) => {
+app.get("/benchmarks/concurrent/products/users", async (req, res) => {
   const productBoughtByUser = await concurrent_getProductBoughtByUser_REST();
   res.send(productBoughtByUser);
 });
