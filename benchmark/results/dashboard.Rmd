@@ -1,5 +1,5 @@
 ---
-title: "Themed dashboard"
+title: "Benchmark analysis"
 output: 
   flexdashboard::flex_dashboard:
     theme:
@@ -198,6 +198,10 @@ df_c = df_c %>% tidyr::separate(data = .,col = type,sep = "_",into = c("to_remov
   mutate(func = ifelse(func == "createProduct", "addProduct", 
                        ifelse(func == "getProductBoughtByUser", "products-users", func)))
 ```
+Row {data-height=600}
+--------------------------------
+
+### success/failure distribution
 
 ```{r, echo=FALSE}
 #compute the percentage of success, errors and timeout for each concurrent user (1,10,100,1000,10000)
@@ -218,6 +222,8 @@ p = df_c %>% select("type","func","concurrent_user","X2xx","errors","timeouts") 
 
 ggplotly(p,width = 1000,height=500)
 ```
+
+### Response time per concurrent user
 
 ```{r, echo=FALSE}
 
@@ -244,34 +250,35 @@ Concurrent benchmark (JMeter)
 A concurrency benchmark was done with JMeter to test server performance and response time. The sample used is the *few* sample one. The test has not been done with the *lotof* sample because response times are too high.
 
 ```{r, include=FALSE}
-path = "D:/Uni/Travail de master/apache-jmeter-5.5/a transferer/" #change this line to match your path
-files = c("addProduct_graphql",
-          "addProduct_rest",
-          "getUsers_graphql",
-          "getUsers_rest",
-          "productBoughtByUser_graphql",
-          "productBoughtByUser_rest")
-
-df_jm = data.frame()
-
-for(file in files) {
-  data = read.csv(paste0(path,"results_",file,"_10000.csv"),header = T)
-  data["type"] = file
-  df_jm = rbind(df_jm,data)
-}
-
-df_jm = df_jm %>%
-  mutate(success = ifelse(success == "true", "success","failure"))
-
-df_jm = df_jm %>% 
-  mutate(timeStamp =  as.POSIXct(timeStamp / 1000, origin = "1970-01-01"))
-
-df_jm %>% 
-
-rm(data)
+# path = "D:/Uni/Travail de master/apache-jmeter-5.5/a transferer/" #change this line to match your path
+# files = c("addProduct_graphql",
+#           "addProduct_rest",
+#           "getUsers_graphql",
+#           "getUsers_rest",
+#           "productBoughtByUser_graphql",
+#           "productBoughtByUser_rest")
+# 
+# df_jm = data.frame()
+# 
+# for(file in files) {
+#   data = read.csv(paste0(path,"results_",file,"_10000.csv"),header = T)
+#   data["type"] = file
+#   df_jm = rbind(df_jm,data)
+# }
+# 
+# df_jm = df_jm %>%
+#   mutate(success = ifelse(success == "true", "success","failure"))
+# 
+# df_jm = df_jm %>% 
+#   mutate(timeStamp =  as.POSIXct(timeStamp / 1000, origin = "1970-01-01"))
+# 
+# df_jm %>% 
+# 
+# rm(data)
+df_jm = readRDS("df_jm.rds")
 ```
 
-Row
+Row {data-height=600}
 ---------------------------
 
 ### Distribution of success and failure per function
@@ -311,7 +318,7 @@ ggplotly(ggplot(a,aes(x=Threads,y=mean/1000,color=type)) +
   
 ```
 
-Row
+Row {data-height=600}
 ---------------------------
 
 ### Response time over time
@@ -342,48 +349,4 @@ ggplotly(df_jm %>%
 
 ```
 
-### Response time over time by threadsGroup
 
-```{r, echo=FALSE}
-
-ggplotly(df_jm %>% 
-           filter(success == "success") %>%
-           group_by(type) %>% 
-           arrange(timeStamp) %>% 
-           mutate(difference = as.integer(difftime(timeStamp,first(timeStamp),units="secs"))) %>%
-           mutate(interval = cut(difference,seq(0, max(difference)+10, 60),dig.lab=10)) %>%
-           ungroup() %>%
-           mutate(interval_threads = cut(grpThreads,seq(0,max(grpThreads) + 10,1000),dig.lab=10)) %>%
-           group_by(type,interval,interval_threads) %>% 
-           summarise(response = mean(elapsed/1000,na.rm=T),n=n()) %>%
-           ungroup() %>%
-           mutate(lower_bound = str_match(as.character(interval),"(?<=\\()(.*)(?=,)")[,2]) %>%
-           mutate(lower_bound_threads = str_match(as.character(interval_threads),"(?<=\\()(.*)(?=,)")[,2]) %>%
-           filter(!is.na(lower_bound),!is.na(lower_bound_threads)) %>% 
-           mutate(lower_bound = as.integer(lower_bound)) %>%
-           mutate(lower_bound_threads = as.integer(lower_bound_threads)) %>%
-           tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
-           ggplot(.)  + geom_line(aes(x=lower_bound,y=response,color=type)) + facet_grid(func~lower_bound_threads) + theme_bw(),width = 1000,height=500)
-```
-
-Row
-----------------------
-
-### Distribution of response time per sentBytes, function and type
-
-```{r echo=FALSE}
-
-a = df_jm %>%
-  #filter(success == "success") %>%
-  group_by(type,grpThreads) %>%
-  summarise(mean = mean(sentBytes)) %>%
-  ungroup() %>% 
-  tidyr::separate(data = .,col = type,sep = "_",into = c("func","type"),remove = FALSE) %>%
-  mutate(func = ifelse(func == "createProduct", "addProduct",
-                       ifelse(func == "productBoughtByUser", "products-users",func))) 
-
-ggplotly(ggplot(a,aes(x=grpThreads,y=mean,color=type)) +
-  geom_point() +
-  facet_grid(.~func) + theme_bw()+ ylab("Response time (second)"),width = 1000,height=500) 
-  
-```
