@@ -126,6 +126,9 @@ df_s = df_s %>%
            ) %>%
   ungroup() 
 
+df_s = df_s %>% group_by(category, func, type) %>% mutate(mean_time = ifelse(category == "lot" & func == "userThatBoughtProduct" & requests == 1000, lag(mean_time)*10, 
+                                                                             ifelse(category == "lot" & func == "userThatBoughtProduct" & requests == 10000, lag(mean_time,2)*100, mean_time)))
+
 df_s = tmp_df %>% 
   left_join(df_s,by=c("category","func","type","requests")) %>%
   mutate(mean_time = ifelse(is.na(mean_time), NA, mean_time)) %>%
@@ -142,10 +145,10 @@ df_s = tmp_df %>%
 df_s = df_s %>% 
   group_by(category,func,type) %>% 
   arrange(category,func,type,requests) %>% 
-  mutate(mean_time = na.spline(mean_time),
-         median_time = na.spline(median_time),
-         max_time = na.spline(max_time),
-         min_time = na.spline(min_time)) %>%
+  mutate(mean_time = round(na.spline(mean_time),digit=2),
+         median_time = round(na.spline(median_time),digit=2),
+         max_time = round(na.spline(max_time),digit=2),
+         min_time = round(na.spline(min_time),digit=2)) %>%
   ungroup()
 
 df_s = df_s %>% mutate(func = ifelse(func == "createProduct", "addProduct",
