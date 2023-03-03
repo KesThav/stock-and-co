@@ -11,7 +11,7 @@ import {
   createProductBenchmark,
   getProductBoughtByUserBenchmark,
   getProductBoughtByUser,
-} from "../functions/concurrentBenchmark.js";
+} from "../functions/loadBenchmark.js";
 import {
   b_getUsers_GraphQL,
   b_createProduct_GraphQL,
@@ -30,7 +30,7 @@ const Query = new GraphQLObjectType({
   name: "Query",
   description: "This is the root query",
   fields: () => ({
-    concurrentB_getUsers_GraphQL: {
+    loadB_getUsers_GraphQL: {
       type: returnMessage,
       args: {},
       resolve: () => getUsersBenchmark(),
@@ -45,7 +45,7 @@ const Query = new GraphQLObjectType({
       args: {},
       resolve: () => b_getProductBoughtByUser_GraphQL(),
     },
-    concurrentB_getProductBoughtByUser_GraphQL: {
+    loadB_getProductBoughtByUser_GraphQL: {
       type: returnMessage,
       args: {},
       resolve: () => getProductBoughtByUserBenchmark(),
@@ -67,7 +67,7 @@ const Mutation = new GraphQLObjectType({
       args: {},
       resolve: () => b_createProduct_GraphQL(),
     },
-    concurrentB_createProduct_GraphQL: {
+    loadB_createProduct_GraphQL: {
       type: returnMessage,
       args: {},
       resolve: () => createProductBenchmark(),

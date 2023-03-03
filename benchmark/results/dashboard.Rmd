@@ -72,27 +72,6 @@ Sequential Benchmark
 =====================================================================
 
 Row
--------------------------------
-### About the sequential Benchmark
-The sequential benchmark was done in order to compare the response time of REST and GraphQL.
-The test was done on two types of sample. \
-
-The *few* sample contains : \
-- 10 users
-- 84 products
-- 79 orders \
-
-The *lotof* sample contains : \
-- 100'000 users
-- 84 products
-- 300204 orders  \
-
-We simulate a user doing n requests where n = {1,10,100,1000,10000} on three functions:\
-- getUsers (only user-microservice is involved). \
-- createProduct (only product-microservice is involved). \
-- userThatBoughtProduct (user, product and order microservices are involved).
-
-Row
 ---------------------------------------------
 ### Result sample size per category, function and type 
 

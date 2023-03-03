@@ -39,11 +39,11 @@ export const getUsersBenchmark = async () => {
   }
   try {
     await fs.writeFile(
-      "./results/concurrent_getUsers_GraphQL.json",
+      "./results/load_getUsers_GraphQL.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_getUsers_GraphQL saved to file");
+        console.log("load_getUsers_GraphQL saved to file");
       }
     );
   } catch (err) {
@@ -78,11 +78,11 @@ export const createProductBenchmark = async () => {
   }
   try {
     await fs.writeFile(
-      "./results/concurrent_createProduct_GraphQL.json",
+      "./results/load_createProduct_GraphQL.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_createProduct_GraphQL saved to file");
+        console.log("load_createProduct_GraphQL saved to file");
       }
     );
   } catch (err) {
@@ -117,11 +117,11 @@ export const createProductBenchmark = async () => {
 //   }
 //   try {
 //     await fs.writeFile(
-//       "./results/concurrent_getProductBoughtByUser_GraphQL.json",
+//       "./results/load_getProductBoughtByUser_GraphQL.json",
 //       JSON.stringify(results),
 //       (err) => {
 //         if (err) throw err;
-//         console.log("concurrent_getProductBoughtByUser_GraphQL saved to file");
+//         console.log("load_getProductBoughtByUser_GraphQL saved to file");
 //       }
 //     );
 //   } catch (err) {
@@ -190,11 +190,11 @@ export const getProductBoughtByUserBenchmark = async () => {
       }
     }
     await fs.writeFile(
-      "./results/concurrent_getProductBoughtByUser_GraphQL.json",
+      "./results/load_getProductBoughtByUser_GraphQL.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_getProductBoughtByUser_GraphQL saved to file");
+        console.log("load_getProductBoughtByUser_GraphQL saved to file");
       }
     );
   } catch (err) {
@@ -204,7 +204,7 @@ export const getProductBoughtByUserBenchmark = async () => {
 
 //##################################################################### REST #######################################################################
 
-export const concurrent_getUsers_REST = async () => {
+export const load_getUsers_REST = async () => {
   const results = {};
 
   for (let i = 0; i < nConnections.length; i++) {
@@ -229,11 +229,11 @@ export const concurrent_getUsers_REST = async () => {
   }
   try {
     await fs.writeFile(
-      "./results/concurrent_getUsers__REST.json",
+      "./results/load_getUsers__REST.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_getUsers_REST saved to file");
+        console.log("load_getUsers_REST saved to file");
       }
     );
   } catch (err) {
@@ -241,7 +241,7 @@ export const concurrent_getUsers_REST = async () => {
   }
 };
 
-export const concurrent_createProduct_REST = async () => {
+export const load_createProduct_REST = async () => {
   const results = {};
   const product = createProduct_GraphQL();
 
@@ -268,11 +268,11 @@ export const concurrent_createProduct_REST = async () => {
   }
   try {
     await fs.writeFile(
-      "./results/concurrent_createProduct_REST.json",
+      "./results/load_createProduct_REST.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_createProduct_REST saved to file");
+        console.log("load_createProduct_REST saved to file");
       }
     );
   } catch (err) {
@@ -280,7 +280,7 @@ export const concurrent_createProduct_REST = async () => {
   }
 };
 
-export const concurrent_getProductBoughtByUser_REST = async () => {
+export const load_getProductBoughtByUser_REST = async () => {
   const results = {};
 
   for (let i = 0; i < nConnections.length; i++) {
@@ -305,11 +305,11 @@ export const concurrent_getProductBoughtByUser_REST = async () => {
   }
   try {
     await fs.writeFile(
-      "./results/concurrent_getProductBoughtByUser_REST.json",
+      "./results/load_getProductBoughtByUser_REST.json",
       JSON.stringify(results),
       (err) => {
         if (err) throw err;
-        console.log("concurrent_getProductBoughtByUser_REST saved to file");
+        console.log("load_getProductBoughtByUser_REST saved to file");
       }
     );
   } catch (err) {

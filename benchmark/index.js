@@ -10,10 +10,10 @@ import {
   getProductBoughtByUser_REST,
 } from "./functions/sequentialBenchmark.js";
 import {
-  concurrent_getUsers_REST,
-  concurrent_createProduct_REST,
-  concurrent_getProductBoughtByUser_REST,
-} from "./functions/concurrentBenchmark.js";
+  load_getUsers_REST,
+  load_createProduct_REST,
+  load_getProductBoughtByUser_REST,
+} from "./functions/loadBenchmark.js";
 import * as console from "console";
 import fs from "fs";
 
@@ -64,18 +64,18 @@ app.get("/products-users", async (req, res) => {
   res.send(productBoughtByUser);
 });
 
-app.get("/benchmarks/concurrent/users", async (req, res) => {
-  const users = await concurrent_getUsers_REST();
+app.get("/benchmarks/load/users", async (req, res) => {
+  const users = await load_getUsers_REST();
   res.send(users);
 });
 
-app.get("/benchmarks/concurrent/products/users", async (req, res) => {
-  const productBoughtByUser = await concurrent_getProductBoughtByUser_REST();
+app.get("/benchmarks/load/products/users", async (req, res) => {
+  const productBoughtByUser = await load_getProductBoughtByUser_REST();
   res.send(productBoughtByUser);
 });
 
-app.post("/benchmarks/concurrent/product", async (req, res) => {
-  const product = await concurrent_createProduct_REST();
+app.post("/benchmarks/load/product", async (req, res) => {
+  const product = await load_createProduct_REST();
   res.send(product);
 });
 

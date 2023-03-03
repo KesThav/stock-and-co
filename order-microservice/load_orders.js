@@ -85,62 +85,62 @@ export const load_orders = async () => {
   //generate fake orders
   console.log("Loading orders...");
   let order = 1;
-  while (order < 300204) {
-    try {
-      for (let i = 0; i < userData.length; i++) {
-        const loopSize = Math.floor(5 * Math.random() + 1);
-        for (let j = 0; j < loopSize; j++) {
-          const randomLength = Math.floor(10 * Math.random() + 1);
-          const array = Array(randomLength)
-            .fill()
-            .map(() => Math.floor((productData.length - 1) * Math.random()));
+  //while (order < 300204) {
+  try {
+    for (let i = 0; i < userData.length; i++) {
+      const loopSize = Math.floor(5 * Math.random() + 1);
+      for (let j = 0; j < loopSize; j++) {
+        const randomLength = Math.floor(10 * Math.random() + 1);
+        const array = Array(randomLength)
+          .fill()
+          .map(() => Math.floor((productData.length - 1) * Math.random()));
 
-          const filterProduct = productData
-            .filter((prod, idx) => array.includes(idx))
-            .map((prod) => ({
-              productid: prod._id,
-              price: prod.price,
-              quantity: Math.floor(Math.random() * 10 + 1),
-              _id: mongoose.Types.ObjectId(),
-            }));
+        const filterProduct = productData
+          .filter((prod, idx) => array.includes(idx))
+          .map((prod) => ({
+            productid: prod._id,
+            price: prod.price,
+            quantity: Math.floor(Math.random() * 10 + 1),
+            _id: mongoose.Types.ObjectId(),
+          }));
 
-          let amount = filterProduct.reduce(
-            (total, prod) => total + prod.price * prod.quantity,
-            0
-          );
+        let amount = filterProduct.reduce(
+          (total, prod) => total + prod.price * prod.quantity,
+          0
+        );
 
-          const myorder = {
-            orderid: uuidv4(),
-            userid: userData[i]._id,
-            products: filterProduct,
-            total: amount,
-            status: "Closed",
-            type: "Card",
-            discount: 0,
-          };
+        const myorder = {
+          orderid: uuidv4(),
+          userid: userData[i]._id,
+          products: filterProduct,
+          total: amount,
+          status: "Closed",
+          type: "Card",
+          discount: 0,
+        };
 
-          const data_camunda = {
-            userid: userData[i]._id,
-            orderid: myorder.orderid,
-            ptype: "Card",
-            order: myorder,
-            discount: 0,
-          };
+        const data_camunda = {
+          userid: userData[i]._id,
+          orderid: myorder.orderid,
+          ptype: "Card",
+          order: myorder,
+          discount: 0,
+        };
 
-          await createOrder(myorder);
-          console.log("Order " + order + " loaded !");
-          order++;
-          //await startInstance(data_camunda);
-          await sleep(1000);
-        }
+        await createOrder(myorder);
+        console.log("Order " + order + " loaded !");
+        order++;
+        //await startInstance(data_camunda);
+        await sleep(1000);
       }
-
-      console.log("Orders loaded !");
-      //validate_orders();
-    } catch (err) {
-      console.log(err);
     }
+
+    console.log("Orders loaded !");
+    //validate_orders();
+  } catch (err) {
+    console.log(err);
   }
+  //}
 };
 
 export const validate_orders = async () => {
