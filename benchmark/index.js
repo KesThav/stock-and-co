@@ -59,7 +59,7 @@ app.get("/benchmarks/sequential/products/users", async (req, res) => {
   res.send(products);
 });
 
-app.get("/products-users", async (req, res) => {
+app.get("/products/users", async (req, res) => {
   const productBoughtByUser = await getProductBoughtByUser_REST();
   res.send(productBoughtByUser);
 });
