@@ -127,16 +127,16 @@ export const load_orders = async () => {
           discount: 0,
         };
 
-        await createOrder(myorder);
+        //await createOrder(myorder);
         console.log("Order " + order + " loaded !");
         order++;
-        //await startInstance(data_camunda);
+        await startInstance(data_camunda);
         await sleep(1000);
       }
     }
 
     console.log("Orders loaded !");
-    //validate_orders();
+    validate_orders();
   } catch (err) {
     console.log(err);
   }
