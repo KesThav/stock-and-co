@@ -135,9 +135,9 @@ df_s = df_s %>% mutate(func = ifelse(func == "createProduct", "addProduct",
                        ifelse(func == "userThatBoughtProduct", "products-users",func)))
 
 
-p1 = ggplot(df_s %>% mutate(both = paste0(category, " - ", func)),aes(x=requests,y=mean_time,color=type)) + geom_line()  + facet_wrap(both~.,scales="free_y") + theme_bw() + ylab("Response time (second)") + xlab("Number of request")   
+p1 = ggplot(df_s %>% filter(func == "getUsers") %>%  mutate(both = paste0(category, " - ", func)),aes(x=requests,y=mean_time,color=type)) + geom_line()  + facet_wrap(both~.,scales="free_y") + theme_bw() + ylab("Response time (second)") + xlab("Number of request")   
 
-ggplotly(p1,width = 1000,height=500) %>% layout(hovermode = "x unified")
+ggplotly(p1,width = 800,height=400) %>% layout(hovermode = "x unified")
 
 ```
 

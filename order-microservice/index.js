@@ -73,7 +73,7 @@ app.get("/orders", async (req, res) => {
 });
 
 app.post("/orders/load", async (req, res) => {
-  const orders = await load_orders();
+  const orders = await load_orders(req.query.nbOfOrders);
   res.send(orders);
 });
 

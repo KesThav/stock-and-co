@@ -1,0 +1,11 @@
+name: results
+title:
+username:
+account: kassis
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8603534
+bundleId: 6975572
+url: https://kassis.shinyapps.io/results/
+when: 1679146866.05627
+lastSyncTime: 1679146866.05629
